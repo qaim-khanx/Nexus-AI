@@ -10,8 +10,8 @@ import { SystemStatusService, AgentStatus } from '../../services/system-status.s
     <div class="space-y-6 max-w-7xl mx-auto">
       <!-- Page Header -->
       <div>
-        <h1 class="text-3xl font-bold text-gray-900">Agents</h1>
-        <p class="text-gray-600">AI agent management and monitoring</p>
+        <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Agents</h1>
+        <p class="text-gray-600 dark:text-gray-400">AI agent management and monitoring</p>
       </div>
 
       <!-- Agent Overview Cards -->
@@ -27,8 +27,8 @@ import { SystemStatusService, AgentStatus } from '../../services/system-status.s
                 </div>
               </div>
               <div class="ml-4">
-                <p class="text-sm font-medium text-gray-600">Total Agents</p>
-                <p class="text-2xl font-bold text-gray-900">{{ agents.length }}</p>
+                <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Total Agents</p>
+                <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ agents.length }}</p>
               </div>
             </div>
             <div class="flex items-center">
@@ -48,8 +48,8 @@ import { SystemStatusService, AgentStatus } from '../../services/system-status.s
                 </div>
               </div>
               <div class="ml-4">
-                <p class="text-sm font-medium text-gray-600">Active Agents</p>
-                <p class="text-2xl font-bold text-gray-900">{{ getActiveAgentsCount() }}</p>
+                <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Active Agents</p>
+                <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ getActiveAgentsCount() }}</p>
               </div>
             </div>
             <div class="text-right">
@@ -70,13 +70,13 @@ import { SystemStatusService, AgentStatus } from '../../services/system-status.s
                 </div>
               </div>
               <div class="ml-4">
-                <p class="text-sm font-medium text-gray-600">Idle Agents</p>
-                <p class="text-2xl font-bold text-gray-900">{{ getIdleAgentsCount() }}</p>
+                <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Idle Agents</p>
+                <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ getIdleAgentsCount() }}</p>
               </div>
             </div>
             <div class="text-right">
               <p class="text-xs text-gray-500">Waiting</p>
-              <p class="text-sm font-semibold text-gray-600">{{ getIdlePercentage() }}%</p>
+              <p class="text-sm font-semibold text-gray-600 dark:text-gray-400">{{ getIdlePercentage() }}%</p>
             </div>
           </div>
         </div>
@@ -92,8 +92,8 @@ import { SystemStatusService, AgentStatus } from '../../services/system-status.s
                 </div>
               </div>
               <div class="ml-4">
-                <p class="text-sm font-medium text-gray-600">Total Predictions</p>
-                <p class="text-2xl font-bold text-gray-900">{{ getTotalPredictions() }}</p>
+                <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Total Predictions</p>
+                <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ getTotalPredictions() }}</p>
               </div>
             </div>
             <div class="text-right">
@@ -114,8 +114,8 @@ import { SystemStatusService, AgentStatus } from '../../services/system-status.s
                   <span class="text-white text-lg font-bold">{{ agent.agent_name.charAt(0) }}</span>
                 </div>
                 <div>
-                  <h3 class="text-lg font-bold text-gray-900">{{ agent.agent_name }}</h3>
-                  <p class="text-sm text-gray-600">AI Agent</p>
+                  <h3 class="text-lg font-bold text-gray-900 dark:text-white">{{ agent.agent_name }}</h3>
+                  <p class="text-sm text-gray-600 dark:text-gray-400">AI Agent</p>
                 </div>
               </div>
               <span [class]="getStatusClassEnhanced(agent.status)">
@@ -123,28 +123,28 @@ import { SystemStatusService, AgentStatus } from '../../services/system-status.s
                 {{ agent.status | titlecase }}
               </span>
             </div>
-            
+
             <div class="space-y-3">
               <div class="flex justify-between items-center">
-                <span class="text-sm text-gray-600">Total Predictions</span>
-                <span class="font-semibold text-gray-900">{{ agent.total_predictions || 0 }}</span>
+                <span class="text-sm text-gray-600 dark:text-gray-400">Total Predictions</span>
+                <span class="font-semibold text-gray-900 dark:text-white">{{ agent.total_predictions || 0 }}</span>
               </div>
               <div class="flex justify-between items-center">
-                <span class="text-sm text-gray-600">Accuracy</span>
-                <span class="font-semibold text-gray-900">{{ (agent.accuracy || 0) | number:'1.1-1' }}%</span>
+                <span class="text-sm text-gray-600 dark:text-gray-400">Accuracy</span>
+                <span class="font-semibold text-gray-900 dark:text-white">{{ (agent.accuracy || 0) | number:'1.1-1' }}%</span>
               </div>
               <div class="flex justify-between items-center">
-                <span class="text-sm text-gray-600">Confidence</span>
+                <span class="text-sm text-gray-600 dark:text-gray-400">Confidence</span>
                 <div class="flex items-center">
-                  <div class="w-16 bg-gray-200 rounded-full h-2 mr-2">
+                  <div class="w-16 bg-gray-200 dark:bg-slate-700 rounded-full h-2 mr-2">
                     <div class="bg-gradient-to-r from-blue-400 to-blue-600 h-2 rounded-full" [style.width.%]="(agent.confidence || 0) * 100"></div>
                   </div>
-                  <span class="text-sm font-semibold text-gray-700">{{ ((agent.confidence || 0) * 100) | number:'1.0-0' }}%</span>
+                  <span class="text-sm font-semibold text-gray-700 dark:text-slate-300">{{ ((agent.confidence || 0) * 100) | number:'1.0-0' }}%</span>
                 </div>
               </div>
               <div class="flex justify-between items-center">
-                <span class="text-sm text-gray-600">Last Prediction</span>
-                <span class="text-sm text-gray-500">{{ agent.last_prediction }}</span>
+                <span class="text-sm text-gray-600 dark:text-gray-400">Last Prediction</span>
+                <span class="text-sm text-gray-500 dark:text-gray-400">{{ agent.last_prediction }}</span>
               </div>
             </div>
           </div>
@@ -175,13 +175,13 @@ export class AgentsComponent implements OnInit {
   }
 
   getActiveAgentsCount(): number {
-    return this.agents.filter(agent => 
+    return this.agents.filter(agent =>
       agent.status.toLowerCase() === 'active' || agent.status.toLowerCase() === 'running'
     ).length;
   }
 
   getIdleAgentsCount(): number {
-    return this.agents.filter(agent => 
+    return this.agents.filter(agent =>
       agent.status.toLowerCase() === 'idle'
     ).length;
   }

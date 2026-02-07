@@ -10,8 +10,8 @@ import { SystemStatusService, Prediction } from '../../services/system-status.se
     <div class="space-y-6 max-w-7xl mx-auto">
       <!-- Page Header -->
       <div>
-        <h1 class="text-3xl font-bold text-gray-900">Predictions</h1>
-        <p class="text-gray-600">Real-time market predictions from AI agents</p>
+        <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Predictions</h1>
+        <p class="text-gray-600 dark:text-gray-400">Real-time market predictions from AI agents</p>
       </div>
 
       <!-- Predictions Overview Cards -->
@@ -27,8 +27,8 @@ import { SystemStatusService, Prediction } from '../../services/system-status.se
                 </div>
               </div>
               <div class="ml-4">
-                <p class="text-sm font-medium text-gray-600">Total Predictions</p>
-                <p class="text-2xl font-bold text-gray-900">{{ predictions.length }}</p>
+                <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Total Predictions</p>
+                <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ predictions.length }}</p>
               </div>
             </div>
             <div class="flex items-center">
@@ -48,8 +48,8 @@ import { SystemStatusService, Prediction } from '../../services/system-status.se
                 </div>
               </div>
               <div class="ml-4">
-                <p class="text-sm font-medium text-gray-600">Buy Signals</p>
-                <p class="text-2xl font-bold text-gray-900">{{ getBuySignalsCount() }}</p>
+                <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Buy Signals</p>
+                <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ getBuySignalsCount() }}</p>
               </div>
             </div>
             <div class="text-right">
@@ -70,8 +70,8 @@ import { SystemStatusService, Prediction } from '../../services/system-status.se
                 </div>
               </div>
               <div class="ml-4">
-                <p class="text-sm font-medium text-gray-600">Sell Signals</p>
-                <p class="text-2xl font-bold text-gray-900">{{ getSellSignalsCount() }}</p>
+                <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Sell Signals</p>
+                <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ getSellSignalsCount() }}</p>
               </div>
             </div>
             <div class="text-right">
@@ -92,8 +92,8 @@ import { SystemStatusService, Prediction } from '../../services/system-status.se
                 </div>
               </div>
               <div class="ml-4">
-                <p class="text-sm font-medium text-gray-600">Hold Signals</p>
-                <p class="text-2xl font-bold text-gray-900">{{ getHoldSignalsCount() }}</p>
+                <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Hold Signals</p>
+                <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ getHoldSignalsCount() }}</p>
               </div>
             </div>
             <div class="text-right">
@@ -109,12 +109,12 @@ import { SystemStatusService, Prediction } from '../../services/system-status.se
         <div class="card-header-enhanced">
           <div class="flex items-center justify-between">
             <div>
-              <h3 class="text-xl font-bold text-gray-900">Recent Predictions</h3>
-              <p class="text-sm text-gray-600 mt-1">Live market predictions from AI agents</p>
+              <h3 class="text-xl font-bold text-gray-900 dark:text-white">Recent Predictions</h3>
+              <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Live market predictions from AI agents</p>
             </div>
             <div class="flex items-center space-x-2">
               <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
-              <span class="text-sm font-medium text-gray-600">{{ predictions.length }} Predictions</span>
+              <span class="text-sm font-medium text-gray-600 dark:text-gray-400">{{ predictions.length }} Predictions</span>
             </div>
           </div>
         </div>
@@ -130,18 +130,18 @@ import { SystemStatusService, Prediction } from '../../services/system-status.se
                 <th class="table-header-enhanced">Reasoning</th>
               </tr>
             </thead>
-            <tbody class="divide-y divide-gray-100">
-              <tr *ngFor="let prediction of predictions; let i = index" class="table-row-enhanced" [class.bg-gray-50]="i % 2 === 0">
+            <tbody class="divide-y divide-gray-100 dark:divide-white/5">
+              <tr *ngFor="let prediction of predictions; let i = index" class="table-row-enhanced hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors" [class.bg-gray-50]="i % 2 === 0" [class.dark:bg-white-05]="i % 2 === 0">
                 <td class="table-cell-enhanced">
                   <div class="flex items-center">
                     <div class="w-8 h-8 bg-gradient-to-br from-blue-400 to-blue-600 rounded-lg flex items-center justify-center mr-3">
                       <span class="text-white text-xs font-bold">{{ prediction.agent_name.charAt(0) }}</span>
                     </div>
-                    <span class="font-semibold text-gray-900">{{ prediction.agent_name }}</span>
+                    <span class="font-semibold text-gray-900 dark:text-white">{{ prediction.agent_name }}</span>
                   </div>
                 </td>
                 <td class="table-cell-enhanced">
-                  <span class="font-semibold text-gray-900">{{ prediction.asset_symbol }}</span>
+                  <span class="font-semibold text-gray-900 dark:text-white">{{ prediction.asset_symbol }}</span>
                 </td>
                 <td class="table-cell-enhanced">
                   <span [class]="getSignalClassEnhanced(prediction.signal_type)">
@@ -151,14 +151,14 @@ import { SystemStatusService, Prediction } from '../../services/system-status.se
                 </td>
                 <td class="table-cell-enhanced">
                   <div class="flex items-center">
-                    <div class="w-16 bg-gray-200 rounded-full h-2 mr-3">
+                    <div class="w-16 bg-gray-200 dark:bg-slate-700 rounded-full h-2 mr-3">
                       <div class="bg-gradient-to-r from-blue-400 to-blue-600 h-2 rounded-full transition-all duration-300" [style.width.%]="prediction.confidence * 100"></div>
                     </div>
-                    <span class="text-sm font-semibold text-gray-700">{{ (prediction.confidence * 100) | number:'1.0-0' }}%</span>
+                    <span class="text-sm font-semibold text-gray-700 dark:text-slate-300">{{ (prediction.confidence * 100) | number:'1.0-0' }}%</span>
                   </div>
                 </td>
-                <td class="table-cell-enhanced text-sm text-gray-500">{{ prediction.timestamp | date:'short' }}</td>
-                <td class="table-cell-enhanced text-sm text-gray-600 max-w-xs truncate">{{ prediction.reasoning }}</td>
+                <td class="table-cell-enhanced text-sm text-gray-500 dark:text-gray-400">{{ prediction.timestamp | date:'short' }}</td>
+                <td class="table-cell-enhanced text-sm text-gray-600 dark:text-gray-300 max-w-xs truncate">{{ prediction.reasoning }}</td>
               </tr>
             </tbody>
           </table>
@@ -190,7 +190,7 @@ export class PredictionsComponent implements OnInit {
 
   getSignalClass(signalType: string): string {
     const baseClass = 'status-indicator';
-    
+
     switch (signalType.toLowerCase()) {
       case 'buy':
       case 'strong_buy':
@@ -225,19 +225,19 @@ export class PredictionsComponent implements OnInit {
   }
 
   getBuySignalsCount(): number {
-    return this.predictions.filter(p => 
+    return this.predictions.filter(p =>
       p.signal_type.toLowerCase().includes('buy')
     ).length;
   }
 
   getSellSignalsCount(): number {
-    return this.predictions.filter(p => 
+    return this.predictions.filter(p =>
       p.signal_type.toLowerCase().includes('sell')
     ).length;
   }
 
   getHoldSignalsCount(): number {
-    return this.predictions.filter(p => 
+    return this.predictions.filter(p =>
       p.signal_type.toLowerCase() === 'hold'
     ).length;
   }

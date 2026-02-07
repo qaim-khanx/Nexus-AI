@@ -1,14 +1,14 @@
 <div class="space-y-6 max-w-7xl mx-auto">
   <!-- Page Header -->
   <div>
-    <h1 class="text-3xl font-bold text-gray-900">Agent Router</h1>
-    <p class="text-gray-600">Intelligent agent routing and market regime detection</p>
+    <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Agent Router</h1>
+    <p class="text-gray-600 dark:text-gray-400">Intelligent agent routing and market regime detection</p>
   </div>
 
   <!-- Agent Router Overview Cards -->
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" *ngIf="agentRouterSummary$ | async as summary">
-    <div class="metric-card-enhanced">
-      <div class="p-6">
+    <div class="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-white/5 p-6 flex flex-col justify-center relative overflow-hidden transition-all duration-300 hover:shadow-lg dark:hover:bg-slate-800/80">
+      <div>
         <div class="flex items-center">
           <div class="flex-shrink-0">
             <div class="w-12 h-12 bg-gradient-to-br from-blue-400 to-blue-600 rounded-xl flex items-center justify-center shadow-lg">
@@ -18,19 +18,19 @@
             </div>
           </div>
           <div class="ml-4">
-            <p class="text-sm font-medium text-gray-600">Routing Decisions</p>
-            <p class="text-2xl font-bold text-gray-900">{{ summary.total_routing_decisions | number }}</p>
+            <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Routing Decisions</p>
+            <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ summary.total_routing_decisions | number }}</p>
           </div>
         </div>
         <div class="mt-4 text-right">
-          <p class="text-xs text-gray-500">Accuracy</p>
-          <p class="text-sm font-semibold text-blue-600">{{ (summary.routing_accuracy * 100) | number:'1.1-1' }}%</p>
+          <p class="text-xs text-gray-500 dark:text-gray-400">Accuracy</p>
+          <p class="text-sm font-semibold text-blue-600 dark:text-blue-400">{{ (summary.routing_accuracy * 100) | number:'1.1-1' }}%</p>
         </div>
       </div>
     </div>
 
-    <div class="metric-card-enhanced">
-      <div class="p-6">
+    <div class="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-white/5 p-6 flex flex-col justify-center relative overflow-hidden transition-all duration-300 hover:shadow-lg dark:hover:bg-slate-800/80">
+      <div>
         <div class="flex items-center">
           <div class="flex-shrink-0">
             <div class="w-12 h-12 bg-gradient-to-br from-green-400 to-green-600 rounded-xl flex items-center justify-center shadow-lg">
@@ -40,19 +40,19 @@
             </div>
           </div>
           <div class="ml-4">
-            <p class="text-sm font-medium text-gray-600">Current Regime</p>
-            <p class="text-2xl font-bold text-gray-900">{{ summary.current_regime | titlecase }}</p>
+            <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Current Regime</p>
+            <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ summary.current_regime | titlecase }}</p>
           </div>
         </div>
         <div class="mt-4 text-right">
-          <p class="text-xs text-gray-500">Confidence</p>
-          <p class="text-sm font-semibold text-green-600">{{ (summary.regime_confidence * 100) | number:'1.1-1' }}%</p>
+          <p class="text-xs text-gray-500 dark:text-gray-400">Confidence</p>
+          <p class="text-sm font-semibold text-green-600 dark:text-green-400">{{ (summary.regime_confidence * 100) | number:'1.1-1' }}%</p>
         </div>
       </div>
     </div>
 
-    <div class="metric-card-enhanced">
-      <div class="p-6">
+    <div class="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-white/5 p-6 flex flex-col justify-center relative overflow-hidden transition-all duration-300 hover:shadow-lg dark:hover:bg-slate-800/80">
+      <div>
         <div class="flex items-center">
           <div class="flex-shrink-0">
             <div class="w-12 h-12 bg-gradient-to-br from-purple-400 to-purple-600 rounded-xl flex items-center justify-center shadow-lg">
@@ -62,19 +62,19 @@
             </div>
           </div>
           <div class="ml-4">
-            <p class="text-sm font-medium text-gray-600">Strategy</p>
-            <p class="text-2xl font-bold text-gray-900">{{ summary.active_routing_strategy | titlecase }}</p>
+            <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Strategy</p>
+            <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ summary.active_routing_strategy | titlecase }}</p>
           </div>
         </div>
         <div class="mt-4 text-right">
-          <p class="text-xs text-gray-500">Avg Weight</p>
-          <p class="text-sm font-semibold text-purple-600">{{ (summary.avg_agent_weight * 100) | number:'1.1-1' }}%</p>
+          <p class="text-xs text-gray-500 dark:text-gray-400">Avg Weight</p>
+          <p class="text-sm font-semibold text-purple-600 dark:text-purple-400">{{ (summary.avg_agent_weight * 100) | number:'1.1-1' }}%</p>
         </div>
       </div>
     </div>
 
-    <div class="metric-card-enhanced">
-      <div class="p-6">
+    <div class="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-white/5 p-6 flex flex-col justify-center relative overflow-hidden transition-all duration-300 hover:shadow-lg dark:hover:bg-slate-800/80">
+      <div>
         <div class="flex items-center">
           <div class="flex-shrink-0">
             <div class="w-12 h-12 bg-gradient-to-br from-amber-400 to-amber-600 rounded-xl flex items-center justify-center shadow-lg">
@@ -84,13 +84,13 @@
             </div>
           </div>
           <div class="ml-4">
-            <p class="text-sm font-medium text-gray-600">Last Decision</p>
-            <p class="text-2xl font-bold text-gray-900">{{ summary.last_decision_time | date:'short' }}</p>
+            <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Last Decision</p>
+            <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ summary.last_decision_time | date:'short' }}</p>
           </div>
         </div>
         <div class="mt-4 text-right">
-          <p class="text-xs text-gray-500">Updated</p>
-          <p class="text-sm font-semibold text-amber-600">{{ summary.last_updated | date:'short' }}</p>
+          <p class="text-xs text-gray-500 dark:text-gray-400">Updated</p>
+          <p class="text-sm font-semibold text-amber-600 dark:text-amber-400">{{ summary.last_updated | date:'short' }}</p>
         </div>
       </div>
     </div>
@@ -98,66 +98,66 @@
 
   <!-- Market Regime Analysis -->
   <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-    <div class="metric-card-enhanced" *ngIf="marketRegime$ | async as regime">
-      <div class="px-6 py-4 border-b border-gray-200">
-        <h3 class="text-lg font-medium text-gray-900">Market Regime Analysis</h3>
-        <p class="text-sm text-gray-600">Current market conditions and regime detection</p>
+    <div class="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-white/5 flex flex-col justify-center relative overflow-hidden transition-all duration-300 dark:shadow-[0_4px_6px_-1px_rgba(0,0,0,0.3)]" *ngIf="marketRegime$ | async as regime">
+      <div class="px-6 py-4 border-b border-gray-200 dark:border-white/5">
+        <h3 class="text-lg font-medium text-gray-900 dark:text-white">Market Regime Analysis</h3>
+        <p class="text-sm text-gray-600 dark:text-gray-400">Current market conditions and regime detection</p>
       </div>
       <div class="p-6 space-y-4">
         <div class="flex items-center justify-between">
-          <span class="text-sm font-medium text-gray-600">Regime Type</span>
+          <span class="text-sm font-medium text-gray-600 dark:text-gray-400">Regime Type</span>
           <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full" [class]="getRegimeColor(regime.regime_type)">
             {{ regime.regime_type | titlecase }}
           </span>
         </div>
         <div class="flex items-center justify-between">
-          <span class="text-sm font-medium text-gray-600">Confidence</span>
+          <span class="text-sm font-medium text-gray-600 dark:text-gray-400">Confidence</span>
           <div class="flex items-center">
-            <div class="w-16 bg-gray-200 rounded-full h-2 mr-2">
+            <div class="w-16 bg-gray-200 dark:bg-slate-700 rounded-full h-2 mr-2">
               <div class="h-2 rounded-full bg-blue-500" [style.width.%]="regime.confidence * 100"></div>
             </div>
-            <span class="text-sm font-semibold text-gray-900">{{ (regime.confidence * 100) | number:'1.1-1' }}%</span>
+            <span class="text-sm font-semibold text-gray-900 dark:text-white">{{ (regime.confidence * 100) | number:'1.1-1' }}%</span>
           </div>
         </div>
         <div class="flex items-center justify-between">
-          <span class="text-sm font-medium text-gray-600">Volatility Level</span>
+          <span class="text-sm font-medium text-gray-600 dark:text-gray-400">Volatility Level</span>
           <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full" [class]="getVolatilityColor(getVolatilityLevel(regime.volatility_level))">
             {{ (regime.volatility_level) | number:'1.1-1' }}%
           </span>
         </div>
         <div class="flex items-center justify-between">
-          <span class="text-sm font-medium text-gray-600">Trend Strength</span>
+          <span class="text-sm font-medium text-gray-600 dark:text-gray-400">Trend Strength</span>
           <div class="flex items-center">
-            <div class="w-16 bg-gray-200 rounded-full h-2 mr-2">
+            <div class="w-16 bg-gray-200 dark:bg-slate-700 rounded-full h-2 mr-2">
               <div class="h-2 rounded-full bg-green-500" [style.width.%]="regime.trend_strength * 100"></div>
             </div>
-            <span class="text-sm font-semibold text-gray-900">{{ (regime.trend_strength * 100) | number:'1.1-1' }}%</span>
+            <span class="text-sm font-semibold text-gray-900 dark:text-white">{{ (regime.trend_strength * 100) | number:'1.1-1' }}%</span>
           </div>
         </div>
         <div class="flex items-center justify-between">
-          <span class="text-sm font-medium text-gray-600">Market Sentiment</span>
+          <span class="text-sm font-medium text-gray-600 dark:text-gray-400">Market Sentiment</span>
           <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full" [class]="getSentimentColor(regime.market_sentiment)">
             {{ regime.market_sentiment | titlecase }}
           </span>
         </div>
         <div class="flex items-center justify-between">
-          <span class="text-sm font-medium text-gray-600">Regime Duration</span>
-          <span class="text-sm font-semibold text-gray-900">{{ regime.regime_duration }} days</span>
+          <span class="text-sm font-medium text-gray-600 dark:text-gray-400">Regime Duration</span>
+          <span class="text-sm font-semibold text-gray-900 dark:text-white">{{ regime.regime_duration }} days</span>
         </div>
         <div class="flex items-center justify-between">
-          <span class="text-sm font-medium text-gray-600">Transition Probability</span>
-          <span class="text-sm font-semibold text-gray-900">{{ (regime.transition_probability * 100) | number:'1.1-1' }}%</span>
+          <span class="text-sm font-medium text-gray-600 dark:text-gray-400">Transition Probability</span>
+          <span class="text-sm font-semibold text-gray-900 dark:text-white">{{ (regime.transition_probability * 100) | number:'1.1-1' }}%</span>
         </div>
       </div>
     </div>
 
-    <div class="metric-card-enhanced" *ngIf="agentWeights$ | async as weights">
-      <div class="px-6 py-4 border-b border-gray-200">
-        <h3 class="text-lg font-medium text-gray-900">Agent Weights</h3>
-        <p class="text-sm text-gray-600">Current agent weighting and selection</p>
+    <div class="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-white/5 flex flex-col justify-center relative overflow-hidden transition-all duration-300 dark:shadow-[0_4px_6px_-1px_rgba(0,0,0,0.3)]" *ngIf="agentWeights$ | async as weights">
+      <div class="px-6 py-4 border-b border-gray-200 dark:border-white/5">
+        <h3 class="text-lg font-medium text-gray-900 dark:text-white">Agent Weights</h3>
+        <p class="text-sm text-gray-600 dark:text-gray-400">Current agent weighting and selection</p>
       </div>
       <div class="p-6 space-y-3 max-h-96 overflow-y-auto">
-        <div *ngFor="let weight of weights" class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+        <div *ngFor="let weight of weights" class="flex items-center justify-between p-3 bg-gray-50 dark:bg-slate-800/50 rounded-lg">
           <div class="flex items-center">
             <div class="flex-shrink-0">
               <div class="w-8 h-8 rounded-full bg-gradient-to-r from-blue-400 to-purple-500 flex items-center justify-center">
@@ -165,14 +165,14 @@
               </div>
             </div>
             <div class="ml-3">
-              <div class="text-sm font-medium text-gray-900">{{ weight.agent_name }}</div>
-              <div class="text-sm text-gray-500">{{ weight.reason }}</div>
+              <div class="text-sm font-medium text-gray-900 dark:text-white">{{ weight.agent_name }}</div>
+              <div class="text-sm text-gray-500 dark:text-gray-400">{{ weight.reason }}</div>
             </div>
           </div>
           <div class="text-right">
-            <div class="text-sm font-medium text-gray-900">{{ (weight.weight * 100) | number:'1.1-1' }}%</div>
-            <div class="text-sm text-gray-500">Fit: {{ (weight.regime_fit * 100) | number:'1.1-1' }}%</div>
-            <div class="w-16 bg-gray-200 rounded-full h-1 mt-1">
+            <div class="text-sm font-medium text-gray-900 dark:text-white">{{ (weight.weight * 100) | number:'1.1-1' }}%</div>
+            <div class="text-sm text-gray-500 dark:text-gray-400">Fit: {{ (weight.regime_fit * 100) | number:'1.1-1' }}%</div>
+            <div class="w-16 bg-gray-200 dark:bg-slate-700 rounded-full h-1 mt-1">
               <div class="h-1 rounded-full bg-blue-500" [style.width.%]="weight.weight * 100"></div>
             </div>
           </div>
@@ -182,28 +182,28 @@
   </div>
 
   <!-- Recent Routing Decisions -->
-  <div class="metric-card-enhanced" *ngIf="routingDecisions$ | async as decisions">
-    <div class="px-6 py-4 border-b border-gray-200">
-      <h3 class="text-lg font-medium text-gray-900">Recent Routing Decisions</h3>
-      <p class="text-sm text-gray-600">Latest agent routing decisions and outcomes</p>
+  <div class="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-white/5 flex flex-col justify-center relative overflow-hidden transition-all duration-300 dark:shadow-[0_4px_6px_-1px_rgba(0,0,0,0.3)]">
+    <div class="px-6 py-4 border-b border-gray-200 dark:border-white/5">
+      <h3 class="text-lg font-medium text-gray-900 dark:text-white">Recent Routing Decisions</h3>
+      <p class="text-sm text-gray-600 dark:text-gray-400">Latest agent routing decisions and outcomes</p>
     </div>
     <div class="overflow-x-auto">
-      <table class="min-w-full divide-y divide-gray-200">
-        <thead class="bg-gray-50">
+      <table class="min-w-full divide-y divide-gray-200 dark:divide-white/5">
+        <thead class="bg-gray-50 dark:bg-slate-800/50">
           <tr>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Decision ID</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Regime</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Strategy</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Active Agents</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Confidence</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Risk Level</th>
-            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Timestamp</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Decision ID</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Regime</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Strategy</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Active Agents</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Confidence</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Risk Level</th>
+            <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Timestamp</th>
           </tr>
         </thead>
-        <tbody class="bg-white divide-y divide-gray-200">
-          <tr *ngFor="let decision of decisions.slice(0, 10)" class="hover:bg-gray-50">
+        <tbody class="bg-white dark:bg-transparent divide-y divide-gray-200 dark:divide-white/5">
+          <tr *ngFor="let decision of decisions.slice(0, 10)" class="hover:bg-gray-50 dark:hover:bg-white/[0.02]">
             <td class="px-6 py-4 whitespace-nowrap">
-              <div class="text-sm font-medium text-gray-900">{{ decision.decision_id }}</div>
+              <div class="text-sm font-medium text-gray-900 dark:text-white">{{ decision.decision_id }}</div>
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
               <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full" [class]="getRegimeColor(decision.market_regime.regime_type)">
@@ -211,16 +211,16 @@
               </span>
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
-              <div class="text-sm font-medium text-gray-900">{{ decision.routing_strategy | titlecase }}</div>
+              <div class="text-sm font-medium text-gray-900 dark:text-white">{{ decision.routing_strategy | titlecase }}</div>
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
-              <div class="text-sm font-medium text-gray-900">{{ decision.active_agents.length }}</div>
-              <div class="text-sm text-gray-500">agents selected</div>
+              <div class="text-sm font-medium text-gray-900 dark:text-white">{{ decision.active_agents.length }}</div>
+              <div class="text-sm text-gray-500 dark:text-gray-400">agents selected</div>
             </td>
             <td class="px-6 py-4 whitespace-nowrap">
               <div class="flex items-center">
-                <div class="text-sm font-medium text-gray-900">{{ (decision.confidence * 100) | number:'1.1-1' }}%</div>
-                <div class="ml-2 w-16 bg-gray-200 rounded-full h-2">
+                <div class="text-sm font-medium text-gray-900 dark:text-white">{{ (decision.confidence * 100) | number:'1.1-1' }}%</div>
+                <div class="ml-2 w-16 bg-gray-200 dark:bg-slate-700 rounded-full h-2">
                   <div class="h-2 rounded-full bg-blue-500" [style.width.%]="decision.confidence * 100"></div>
                 </div>
               </div>
@@ -230,7 +230,7 @@
                 {{ decision.risk_level | titlecase }}
               </span>
             </td>
-            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+            <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
               {{ decision.timestamp | date:'short' }}
             </td>
           </tr>

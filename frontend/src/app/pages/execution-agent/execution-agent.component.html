@@ -1,7 +1,7 @@
 <div class="space-y-6 max-w-7xl mx-auto">
   <div>
-    <h1 class="text-3xl font-bold text-gray-900">Execution Agent</h1>
-    <p class="text-gray-600">Order management, position sizing, and execution strategies</p>
+    <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Execution Agent</h1>
+    <p class="text-gray-600 dark:text-gray-400">Order management, position sizing, and execution strategies</p>
   </div>
 
   <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6" *ngIf="executionAgentSummary$ | async as summary">
@@ -16,8 +16,8 @@
             </div>
           </div>
           <div class="ml-4">
-            <p class="text-sm font-medium text-gray-600">Total Orders</p>
-            <p class="text-2xl font-bold text-gray-900">{{ summary.total_orders | number }}</p>
+            <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Total Orders</p>
+            <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ summary.total_orders | number }}</p>
           </div>
         </div>
       </div>
@@ -34,8 +34,8 @@
             </div>
           </div>
           <div class="ml-4">
-            <p class="text-sm font-medium text-gray-600">Success Rate</p>
-            <p class="text-2xl font-bold text-gray-900">{{ (summary.execution_success_rate * 100) | number:'1.1-1' }}%</p>
+            <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Success Rate</p>
+            <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ (summary.execution_success_rate * 100) | number:'1.1-1' }}%</p>
           </div>
         </div>
       </div>
@@ -52,8 +52,8 @@
             </div>
           </div>
           <div class="ml-4">
-            <p class="text-sm font-medium text-gray-600">Total Volume</p>
-            <p class="text-2xl font-bold text-gray-900">${{ summary.total_volume | number:'1.0-0' }}</p>
+            <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Total Volume</p>
+            <p class="text-2xl font-bold text-gray-900 dark:text-white">${{ summary.total_volume | number:'1.0-0' }}</p>
           </div>
         </div>
       </div>
@@ -70,8 +70,8 @@
             </div>
           </div>
           <div class="ml-4">
-            <p class="text-sm font-medium text-gray-600">Avg Execution</p>
-            <p class="text-2xl font-bold text-gray-900">{{ summary.avg_execution_time | number:'1.1-1' }}s</p>
+            <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Avg Execution</p>
+            <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ summary.avg_execution_time | number:'1.1-1' }}s</p>
           </div>
         </div>
       </div>
@@ -79,23 +79,23 @@
   </div>
 
   <div class="metric-card-enhanced">
-    <div class="px-6 py-4 border-b border-gray-200">
-      <h3 class="text-lg font-medium text-gray-900">Execution Agent Status</h3>
-      <p class="text-sm text-gray-600">Real-time execution metrics and performance</p>
+    <div class="px-6 py-4 border-b border-gray-200 dark:border-white/5">
+      <h3 class="text-lg font-medium text-gray-900 dark:text-white">Execution Agent Status</h3>
+      <p class="text-sm text-gray-600 dark:text-gray-400">Real-time execution metrics and performance</p>
     </div>
     <div class="p-6" *ngIf="executionAgentSummary$ | async as summary">
       <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
         <div class="text-center">
-          <div class="text-2xl font-bold text-blue-600">{{ summary.active_orders }}</div>
-          <div class="text-sm text-gray-600">Active Orders</div>
+          <div class="text-2xl font-bold text-blue-600 dark:text-blue-400">{{ summary.active_orders }}</div>
+          <div class="text-sm text-gray-600 dark:text-gray-400">Active Orders</div>
         </div>
         <div class="text-center">
-          <div class="text-2xl font-bold text-green-600">{{ summary.filled_orders | number }}</div>
-          <div class="text-sm text-gray-600">Filled Orders</div>
+          <div class="text-2xl font-bold text-green-600 dark:text-green-400">{{ summary.filled_orders | number }}</div>
+          <div class="text-sm text-gray-600 dark:text-gray-400">Filled Orders</div>
         </div>
         <div class="text-center">
-          <div class="text-2xl font-bold text-purple-600">{{ summary.active_strategies }}</div>
-          <div class="text-sm text-gray-600">Active Strategies</div>
+          <div class="text-2xl font-bold text-purple-600 dark:text-purple-400">{{ summary.active_strategies }}</div>
+          <div class="text-sm text-gray-600 dark:text-gray-400">Active Strategies</div>
         </div>
       </div>
     </div>

@@ -2,9 +2,8 @@ import { Component, OnInit, OnDestroy } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { HttpClient } from '@angular/common/http';
-import { interval, Subscription, forkJoin } from 'rxjs';
-import { switchMap, catchError } from 'rxjs/operators';
-import { of } from 'rxjs';
+import { interval, Subscription, forkJoin, of } from 'rxjs';
+import { catchError } from 'rxjs/operators';
 import { SkeletonComponent } from '../../shared/skeleton/skeleton.component';
 import { SystemStatusService } from '../../services/system-status.service';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
@@ -116,36 +115,36 @@ export class ForecastingDashboardComponent implements OnInit, OnDestroy {
   forecastComparison: ForecastComparison | null = null;
   dayForecastSummary: ForecastSummary | null = null;
   swingForecastSummary: ForecastSummary | null = null;
-  
+
   // RAG Analysis data
   latestRAGAnalysis: any = null;
   expandedRAGSectors: Set<string> = new Set();
-  
+
   // API configuration
   apiUrl = 'http://localhost:8001';
-  
+
   // UI state
   activeTab = 'day-forecasts';
   isLoading = false;
   error: string | null = null;
   autoRefresh = true;
   refreshInterval = 60000; // 1 minute
-  
+
   // Loading states
   isLoadingSummary = true;
   isLoadingDayForecasts = true;
   isLoadingSwingForecasts = true;
   isLoadingComparison = true;
   isLoadingRAGAnalysis = true;
-  
+
   // Form data
   selectedSymbol = 'BTC-USD';
   selectedDayHorizon = 'end_of_day';
   selectedSwingHorizon = 'medium_swing';
-  
-  // Available options - will be populated from managed symbols
+
+  // Available options
   symbols: string[] = [];
-  
+
   // Filter options
   selectedDayFilter = 'all';
   selectedSwingFilter = 'all';
@@ -166,17 +165,17 @@ export class ForecastingDashboardComponent implements OnInit, OnDestroy {
     { value: 'medium_swing', label: 'Medium Swing (5-7 days)' },
     { value: 'long_swing', label: 'Long Swing (7-10 days)' }
   ];
-  
+
   // Advanced Forecasting
   advancedForecasts: any[] = [];
   isLoadingAdvanced = false;
   selectedAdvancedFilter = 'all';
-  
+
   // Expand/Collapse state
   expandedDayForecasts: Set<string> = new Set();
   expandedSwingForecasts: Set<string> = new Set();
   expandedAdvancedForecasts: Set<string> = new Set();
-  
+
   // Sorting state
   daySortColumn: string = 'symbol';
   daySortDirection: 'asc' | 'desc' = 'asc';
@@ -184,16 +183,16 @@ export class ForecastingDashboardComponent implements OnInit, OnDestroy {
   swingSortDirection: 'asc' | 'desc' = 'asc';
   advancedSortColumn: string = 'symbol';
   advancedSortDirection: 'asc' | 'desc' = 'asc';
-  
+
   // Subscriptions
   private refreshSubscription?: Subscription;
-  
+
   constructor(
-    private http: HttpClient, 
+    private http: HttpClient,
     private systemStatusService: SystemStatusService,
     private sanitizer: DomSanitizer
   ) {}
-  
+
   ngOnInit(): void {
     this.loadManagedSymbols();
     this.loadAllData();
@@ -201,13 +200,14 @@ export class ForecastingDashboardComponent implements OnInit, OnDestroy {
     this.loadLatestRAGAnalysis();
     this.startAutoRefresh();
   }
-  
+
   ngOnDestroy(): void {
     if (this.refreshSubscription) {
       this.refreshSubscription.unsubscribe();
     }
   }
 
+  // --- Helpers ---
   toggleDayForecastExpansion(symbol: string): void {
     if (this.expandedDayForecasts.has(symbol)) {
       this.expandedDayForecasts.delete(symbol);
@@ -282,7 +282,6 @@ export class ForecastingDashboardComponent implements OnInit, OnDestroy {
     let aValue: any;
     let bValue: any;
 
-    // Map column names to property names
     switch (column) {
       case 'symbol':
         aValue = a.symbol;
@@ -325,11 +324,9 @@ export class ForecastingDashboardComponent implements OnInit, OnDestroy {
         bValue = b[column];
     }
 
-    // Handle null/undefined values
     if (aValue === null || aValue === undefined) aValue = '';
     if (bValue === null || bValue === undefined) bValue = '';
 
-    // Compare values
     let comparison = 0;
     if (typeof aValue === 'string' && typeof bValue === 'string') {
       comparison = aValue.localeCompare(bValue);
@@ -349,37 +346,26 @@ export class ForecastingDashboardComponent implements OnInit, OnDestroy {
 
   private parseTechnicalIndicators(indicators: any): TechnicalIndicator[] {
     if (!indicators) return [];
-    
-    // If it's already an array, return it
     if (Array.isArray(indicators)) return indicators;
-    
-    // If it's a string, try to parse it
+
     if (typeof indicators === 'string') {
       try {
         const parsed = JSON.parse(indicators);
-        
-        // If it's the old dictionary format, convert to array format
         if (typeof parsed === 'object' && !Array.isArray(parsed)) {
           return this.convertDictToArray(parsed);
         }
-        
-        // If it's already an array, return it
         if (Array.isArray(parsed)) return parsed;
-        
         return [];
       } catch (e) {
         console.error('Error parsing technical indicators:', e);
         return [];
       }
     }
-    
     return [];
   }
 
   private convertDictToArray(dict: any): TechnicalIndicator[] {
     const indicators: TechnicalIndicator[] = [];
-    
-    // Convert old dictionary format to array format
     if (dict.rsi !== undefined) {
       indicators.push({
         name: 'RSI',
@@ -389,7 +375,6 @@ export class ForecastingDashboardComponent implements OnInit, OnDestroy {
         timestamp: new Date().toISOString()
       });
     }
-    
     if (dict.macd !== undefined) {
       indicators.push({
         name: 'MACD',
@@ -399,7 +384,6 @@ export class ForecastingDashboardComponent implements OnInit, OnDestroy {
         timestamp: new Date().toISOString()
       });
     }
-    
     if (dict.bollinger_position !== undefined) {
       indicators.push({
         name: 'Bollinger',
@@ -409,7 +393,6 @@ export class ForecastingDashboardComponent implements OnInit, OnDestroy {
         timestamp: new Date().toISOString()
       });
     }
-    
     if (dict.volume_trend !== undefined) {
       indicators.push({
         name: 'Volume',
@@ -419,13 +402,11 @@ export class ForecastingDashboardComponent implements OnInit, OnDestroy {
         timestamp: new Date().toISOString()
       });
     }
-    
     return indicators;
   }
 
   private parseJsonField(field: any, defaultValue: any = null): any {
     if (!field) return defaultValue;
-    
     if (typeof field === 'string') {
       try {
         return JSON.parse(field);
@@ -434,31 +415,24 @@ export class ForecastingDashboardComponent implements OnInit, OnDestroy {
         return defaultValue;
       }
     }
-    
     return field;
   }
-  
+
   loadManagedSymbols(): void {
     this.http.get<any>('http://localhost:8001/symbols/managed-with-market-data')
       .pipe(
         catchError(error => {
           console.error('Error loading managed symbols:', error);
-          // Fallback to default symbols if API fails
           this.symbols = ['BTC-USD', 'SOXL', 'NVDA', 'RIVN', 'TSLA', 'SPY', 'META', 'AMD', 'INTC', 'TQQQ'];
           return of(null);
         })
       )
       .subscribe(response => {
         if (response && response.symbols) {
-          this.symbols = response.symbols
-            .map((symbol: any) => symbol.symbol);
-          
-          // Set default selected symbol to first available symbol
+          this.symbols = response.symbols.map((symbol: any) => symbol.symbol);
           if (this.symbols.length > 0 && !this.symbols.includes(this.selectedSymbol)) {
             this.selectedSymbol = this.symbols[0];
           }
-          
-          console.log('Loaded managed symbols for forecasting:', this.symbols);
         }
       });
   }
@@ -471,13 +445,13 @@ export class ForecastingDashboardComponent implements OnInit, OnDestroy {
         });
     }
   }
-  
+
   stopAutoRefresh(): void {
     if (this.refreshSubscription) {
       this.refreshSubscription.unsubscribe();
     }
   }
-  
+
   toggleAutoRefresh(): void {
     this.autoRefresh = !this.autoRefresh;
     if (this.autoRefresh) {
@@ -486,17 +460,16 @@ export class ForecastingDashboardComponent implements OnInit, OnDestroy {
       this.stopAutoRefresh();
     }
   }
-  
+
   setActiveTab(tab: string): void {
     this.activeTab = tab;
   }
-  
+
   loadAllData(): void {
     this.isLoading = true;
     this.error = null;
     this.isLoadingSummary = true;
-    
-    // Load forecast summaries
+
     this.http.get<ForecastSummary>('http://localhost:8001/forecasting/day-forecast/summary')
       .pipe(catchError(error => {
         console.error('Error loading day forecast summary:', error);
@@ -505,7 +478,7 @@ export class ForecastingDashboardComponent implements OnInit, OnDestroy {
       .subscribe(data => {
         this.dayForecastSummary = data;
       });
-    
+
     this.http.get<ForecastSummary>('http://localhost:8001/forecasting/swing-forecast/summary')
       .pipe(catchError(error => {
         console.error('Error loading swing forecast summary:', error);
@@ -516,8 +489,7 @@ export class ForecastingDashboardComponent implements OnInit, OnDestroy {
         this.isLoading = false;
         this.isLoadingSummary = false;
       });
-    
-    // Also reload generated forecasts
+
     this.loadGeneratedForecasts();
   }
 
@@ -534,34 +506,20 @@ export class ForecastingDashboardComponent implements OnInit, OnDestroy {
       }
     });
   }
-  
+
   loadGeneratedForecasts(): void {
-    // Load day forecasts from database
     this.http.get<any[]>(`${this.apiUrl}/forecasting/day-forecasts`)
-      .pipe(
-        catchError(error => {
-          console.error('Error loading day forecasts from database:', error);
-          return of([]);
-        })
-      )
+      .pipe(catchError(error => { console.error('Error loading day forecasts from database:', error); return of([]); }))
       .subscribe(forecasts => {
-        console.log('Loaded day forecasts:', forecasts.length, forecasts);
         this.dayForecasts = forecasts.map(forecast => ({
           ...forecast,
           technical_indicators: this.parseTechnicalIndicators(forecast.technical_indicators)
         }));
-        console.log('Processed day forecasts:', this.dayForecasts.length, this.dayForecasts);
         this.isLoadingDayForecasts = false;
       });
-    
-    // Load swing forecasts from database
+
     this.http.get<any[]>(`${this.apiUrl}/forecasting/swing-forecasts`)
-      .pipe(
-        catchError(error => {
-          console.error('Error loading swing forecasts from database:', error);
-          return of([]);
-        })
-      )
+      .pipe(catchError(error => { console.error('Error loading swing forecasts from database:', error); return of([]); }))
       .subscribe(forecasts => {
         this.swingForecasts = forecasts.map(forecast => ({
           ...forecast,
@@ -571,30 +529,17 @@ export class ForecastingDashboardComponent implements OnInit, OnDestroy {
         }));
         this.isLoadingSwingForecasts = false;
       });
-    
-    // Load advanced forecasts from database
+
     this.http.get<any>(`${this.apiUrl}/forecasting/advanced-forecasts`)
-      .pipe(
-        catchError(error => {
-          console.error('Error loading advanced forecasts from database:', error);
-          return of([]);
-        })
-      )
+      .pipe(catchError(error => { console.error('Error loading advanced forecasts from database:', error); return of([]); }))
       .subscribe(response => {
-        // Handle both live generation response and saved database response
         let forecasts = [];
         if (response && response.forecasts && Array.isArray(response.forecasts)) {
-          // Live generation response
           forecasts = response.forecasts;
         } else if (Array.isArray(response)) {
-          // Saved database response
           forecasts = response;
-        } else {
-          console.error('Unexpected response format for advanced forecasts:', response);
-          forecasts = [];
         }
-        
-        // Parse JSON fields that come as strings from the database
+
         this.advancedForecasts = forecasts.map((forecast: any) => ({
           ...forecast,
           agent_contributions: this.parseJsonField(forecast.agent_contributions, []),
@@ -605,11 +550,8 @@ export class ForecastingDashboardComponent implements OnInit, OnDestroy {
           rl_recommendation: this.parseJsonField(forecast.rl_recommendation, null),
           meta_evaluation: this.parseJsonField(forecast.meta_evaluation, null)
         }));
-        console.log('Loaded advanced forecasts:', this.advancedForecasts.length, 'records');
-        console.log('Sample forecast:', this.advancedForecasts[0]);
       });
-    
-    // Load forecast comparison from localStorage
+
     const savedComparison = localStorage.getItem('forecastComparison');
     if (savedComparison) {
       try {
@@ -618,44 +560,20 @@ export class ForecastingDashboardComponent implements OnInit, OnDestroy {
         console.error('Error parsing saved forecast comparison:', e);
       }
     }
-    // Set loading to false after attempting to load
     this.isLoadingComparison = false;
   }
-  
+
   saveGeneratedForecasts(): void {
-    // Save day forecasts to database
     if (this.dayForecasts.length > 0) {
       this.http.post(`${this.apiUrl}/forecasting/day-forecasts/save`, this.dayForecasts)
-        .pipe(
-          catchError(error => {
-            console.error('Error saving day forecasts to database:', error);
-            return of(null);
-          })
-        )
-        .subscribe(response => {
-          if (response) {
-            console.log('Day forecasts saved to database:', response);
-          }
-        });
+        .pipe(catchError(error => { console.error('Error saving day forecasts to database:', error); return of(null); }))
+        .subscribe();
     }
-    
-    // Save swing forecasts to database
     if (this.swingForecasts.length > 0) {
       this.http.post(`${this.apiUrl}/forecasting/swing-forecasts/save`, this.swingForecasts)
-        .pipe(
-          catchError(error => {
-            console.error('Error saving swing forecasts to database:', error);
-            return of(null);
-          })
-        )
-        .subscribe(response => {
-          if (response) {
-            console.log('Swing forecasts saved to database:', response);
-          }
-        });
+        .pipe(catchError(error => { console.error('Error saving swing forecasts to database:', error); return of(null); }))
+        .subscribe();
     }
-    
-    // Still save forecast comparison to localStorage (for quick access)
     if (this.forecastComparison) {
       localStorage.setItem('forecastComparison', JSON.stringify(this.forecastComparison));
     }
@@ -668,62 +586,42 @@ export class ForecastingDashboardComponent implements OnInit, OnDestroy {
     return 'Very Weak';
   }
 
-  getPriceChange(currentPrice: number, predictedPrice: number): number {
+  getPriceChange(currentPrice: number | undefined | null, predictedPrice: number | undefined | null): number {
     if (!currentPrice || !predictedPrice) return 0;
     return ((predictedPrice - currentPrice) / currentPrice) * 100;
   }
 
   get filteredDayForecasts(): DayForecast[] {
-    console.log('filteredDayForecasts called - filter:', this.selectedDayFilter, 'total forecasts:', this.dayForecasts.length);
-    if (this.selectedDayFilter === 'all') {
-      console.log('Returning all forecasts:', this.dayForecasts.length);
-      return this.dayForecasts;
-    }
-    const filtered = this.dayForecasts.filter(forecast => forecast.direction.toUpperCase() === this.selectedDayFilter);
-    console.log('Filtered forecasts:', filtered.length);
-    return filtered;
+    if (this.selectedDayFilter === 'all') return this.dayForecasts;
+    return this.dayForecasts.filter(forecast => forecast.direction.toUpperCase() === this.selectedDayFilter);
   }
 
   get filteredSwingForecasts(): SwingForecast[] {
-    if (this.selectedSwingFilter === 'all') {
-      return this.swingForecasts;
-    }
+    if (this.selectedSwingFilter === 'all') return this.swingForecasts;
     return this.swingForecasts.filter(forecast => forecast.direction.toUpperCase() === this.selectedSwingFilter);
   }
 
   get filteredAdvancedForecasts(): any[] {
-    if (this.selectedAdvancedFilter === 'all') {
-      return this.advancedForecasts;
-    }
+    if (this.selectedAdvancedFilter === 'all') return this.advancedForecasts;
     return this.advancedForecasts.filter(forecast => forecast.final_signal === this.selectedAdvancedFilter);
   }
 
-
   getSignalCount(forecasts: any[], signal: string): number {
-    console.log('getSignalCount called with:', signal, 'forecasts:', forecasts?.length);
-    if (!forecasts || forecasts.length === 0) {
-      console.log('getSignalCount: No forecasts or empty array');
-      return 0;
-    }
-    const count = forecasts.filter(forecast => 
+    if (!forecasts || forecasts.length === 0) return 0;
+    return forecasts.filter(forecast =>
       (forecast.direction?.toUpperCase() === signal) || (forecast.final_signal === signal)
     ).length;
-    console.log(`getSignalCount: ${signal} signals = ${count} (total forecasts: ${forecasts.length})`);
-    console.log('Sample forecast directions:', forecasts.slice(0, 3).map(f => f.direction));
-    return count;
   }
-  
+
   generateForecasts(): void {
     this.isLoading = true;
     this.isLoadingDayForecasts = true;
     this.isLoadingSwingForecasts = true;
     this.error = null;
-    
-    // Generate both day and swing forecasts
+
     const dayForecast$ = this.http.get<any>(`http://localhost:8001/forecasting/day-forecast?symbol=${this.selectedSymbol}&horizon=${this.selectedDayHorizon}`);
-    const swingForecast$ = this.http.get<any>(`http://localhost:8001/forecasting/swing-forecast?symbol=${this.selectedSymbol}&horizon=${this.selectedSwingHorizon}`);
-    
-    // Wait for both forecasts to complete
+    const swingForecast$ = this.http.get<any>(`http://localhost:8001/forecasting/swing-forecast?symbol=${this.selectedSwingHorizon}&horizon=${this.selectedSwingHorizon}`);
+
     forkJoin([dayForecast$, swingForecast$])
       .pipe(catchError(error => {
         console.error('Error generating forecasts:', error);
@@ -733,18 +631,11 @@ export class ForecastingDashboardComponent implements OnInit, OnDestroy {
         this.isLoading = false;
         this.isLoadingDayForecasts = false;
         this.isLoadingSwingForecasts = false;
-        
-        if (dayResult) {
-          this.dayForecasts = [dayResult];
-        }
-        if (swingResult) {
-          this.swingForecasts = [swingResult];
-        }
-        
-        // Save the generated forecasts
+
+        if (dayResult) this.dayForecasts = [dayResult];
+        if (swingResult) this.swingForecasts = [swingResult];
+
         this.saveGeneratedForecasts();
-        
-        // Load comparison
         this.loadForecastComparison();
       });
   }
@@ -754,35 +645,27 @@ export class ForecastingDashboardComponent implements OnInit, OnDestroy {
     this.isLoadingDayForecasts = true;
     this.isLoadingSwingForecasts = true;
     this.error = null;
-    
-    console.log('Generating forecasts for all managed symbols...');
-    
+
     this.http.get<any>('http://localhost:8001/forecasting/generate-all-forecasts')
-      .pipe(
-        catchError(error => {
+      .pipe(catchError(error => {
           console.error('Error generating forecasts for all symbols:', error);
           this.error = 'Failed to generate forecasts for all symbols';
           this.isLoading = false;
           this.isLoadingDayForecasts = false;
           this.isLoadingSwingForecasts = false;
           return of(null);
-        })
-      )
+      }))
       .subscribe(response => {
         this.isLoading = false;
         this.isLoadingDayForecasts = false;
         this.isLoadingSwingForecasts = false;
-        
+
         if (response) {
-          console.log('Generated forecasts for all managed symbols:', response);
-          
-          // Extract day and swing forecasts from the response
           const dayForecasts: DayForecast[] = [];
           const swingForecasts: SwingForecast[] = [];
-          
+
           response.results.forEach((result: any) => {
             if (result.status === 'success') {
-              // Add day forecast
               if (result.day_forecast) {
                 const dayForecast = result.day_forecast;
                 dayForecasts.push({
@@ -793,292 +676,120 @@ export class ForecastingDashboardComponent implements OnInit, OnDestroy {
                   confidence: dayForecast.confidence,
                   direction: dayForecast.signal_type.toUpperCase(),
                   signal_strength: this.getSignalStrength(dayForecast.confidence),
-                  market_regime: 'normal', // Default value
-                  technical_indicators: [
-                    {
-                      name: 'RSI',
-                      value: 50 + (Math.random() - 0.5) * 20, // Mock RSI
-                      signal: dayForecast.signal_type,
-                      strength: dayForecast.confidence,
-                      timestamp: dayForecast.timestamp
-                    }
-                  ],
-                  volatility_forecast: Math.random() * 0.3 + 0.1, // Mock volatility
-                  volume_forecast: Math.random() * 1000000 + 500000, // Mock volume
-                  risk_score: Math.random() * 0.5 + 0.2, // Mock risk score
+                  market_regime: 'normal',
+                  technical_indicators: [],
+                  volatility_forecast: dayForecast.volatility_prediction,
+                  volume_forecast: dayForecast.volume_prediction,
+                  risk_score: dayForecast.risk_score,
                   created_at: dayForecast.timestamp,
-                  valid_until: new Date(new Date(dayForecast.timestamp).getTime() + 24 * 60 * 60 * 1000).toISOString() // 24 hours later
+                  valid_until: new Date(new Date().getTime() + 24 * 60 * 60 * 1000).toISOString()
                 });
               }
-              
-              // Add swing forecast
               if (result.swing_forecast) {
                 const swingForecast = result.swing_forecast;
                 swingForecasts.push({
                   symbol: swingForecast.symbol,
                   horizon: swingForecast.horizon,
                   predicted_price: swingForecast.target_price,
-                  current_price: swingForecast.current_price,
+                  current_price: 0,
                   confidence: swingForecast.confidence,
                   direction: swingForecast.signal_type.toUpperCase(),
                   signal_strength: this.getSignalStrength(swingForecast.confidence),
-                  market_regime: swingForecast.trend || 'normal',
-                  key_events: [], // Empty for now
-                  macro_factors: [], // Empty for now
-                  technical_score: swingForecast.confidence,
-                  fundamental_score: Math.random() * 0.4 + 0.3, // Mock fundamental score
-                  sentiment_score: Math.random() * 0.4 + 0.3, // Mock sentiment score
-                  risk_score: Math.random() * 0.4 + 0.2, // Mock risk score
+                  market_regime: 'normal',
+                  key_events: [],
+                  macro_factors: [],
+                  technical_score: 0.7,
+                  fundamental_score: 0.6,
+                  sentiment_score: 0.5,
+                  risk_score: swingForecast.risk_score,
                   target_price: swingForecast.target_price,
                   stop_loss: swingForecast.stop_loss,
                   created_at: swingForecast.timestamp,
-                  valid_until: new Date(new Date(swingForecast.timestamp).getTime() + swingForecast.days * 24 * 60 * 60 * 1000).toISOString() // Based on days
+                  valid_until: new Date(new Date().getTime() + 7 * 24 * 60 * 60 * 1000).toISOString()
                 });
               }
             }
           });
-          
-          // Update the arrays
+
           this.dayForecasts = dayForecasts;
           this.swingForecasts = swingForecasts;
-          
-          // Save to localStorage so they persist
           this.saveGeneratedForecasts();
-          
-          // Show success message
-          this.error = null;
-          
-          // Refresh the summary data
-          this.loadAllData();
-          
-          // Load comparison for the selected symbol
-          this.loadForecastComparison();
-          
-          // Show a temporary success message
-          const originalError = this.error;
-          this.error = `Successfully generated ${response.forecasts_generated} forecasts for ${response.symbols_processed} symbols!`;
-          setTimeout(() => {
-            this.error = originalError;
-          }, 5000);
         }
       });
   }
-  
+
   loadForecastComparison(): void {
-    this.isLoadingComparison = true;
-    this.http.get<ForecastComparison>(`http://localhost:8001/forecasting/compare-forecasts?symbol=${this.selectedSymbol}`)
-      .pipe(catchError(error => {
-        console.error('Error loading forecast comparison:', error);
-        return of(null);
-      }))
-      .subscribe(data => {
-        this.forecastComparison = data;
-        this.isLoadingComparison = false;
-        // Save the comparison data
-        this.saveGeneratedForecasts();
-      });
-  }
-  
-  getDayForecast(symbol: string, horizon: string): void {
-    this.isLoading = true;
-    this.isLoadingDayForecasts = true;
-    this.error = null;
-    
-    this.http.get<DayForecast>(`http://localhost:8001/forecasting/day-forecast?symbol=${symbol}&horizon=${horizon}`)
-      .pipe(catchError(error => {
-        console.error('Error getting day forecast:', error);
-        return of(null);
-      }))
-      .subscribe(data => {
-        this.isLoading = false;
-        this.isLoadingDayForecasts = false;
-        if (data) {
-          this.dayForecasts = [data];
-          // Save the generated forecast
-          this.saveGeneratedForecasts();
-        } else {
-          this.error = 'Failed to get day forecast';
-        }
-      });
-  }
-  
-  getSwingForecast(symbol: string, horizon: string): void {
-    this.isLoading = true;
-    this.isLoadingSwingForecasts = true;
-    this.error = null;
-    
-    this.http.get<SwingForecast>(`http://localhost:8001/forecasting/swing-forecast?symbol=${symbol}&horizon=${horizon}`)
-      .pipe(catchError(error => {
-        console.error('Error getting swing forecast:', error);
-        return of(null);
-      }))
-      .subscribe(data => {
-        this.isLoading = false;
-        this.isLoadingSwingForecasts = false;
-        if (data) {
-          this.swingForecasts = [data];
-          // Save the generated forecast
-          this.saveGeneratedForecasts();
-        } else {
-          this.error = 'Failed to get swing forecast';
-        }
-      });
-  }
-  
-  getDirectionColor(direction: string): string {
-    switch (direction.toLowerCase()) {
-      case 'up': return 'text-green-600 bg-green-100';
-      case 'down': return 'text-red-600 bg-red-100';
-      case 'sideways': return 'text-yellow-600 bg-yellow-100';
-      default: return 'text-gray-600 bg-gray-100';
-    }
-  }
-  
-  getSignalStrengthColor(strength: string): string {
-    switch (strength.toLowerCase()) {
-      case 'very_strong': return 'text-green-800 bg-green-200';
-      case 'strong': return 'text-green-700 bg-green-100';
-      case 'moderate': return 'text-yellow-700 bg-yellow-100';
-      case 'weak': return 'text-gray-700 bg-gray-100';
-      default: return 'text-gray-600 bg-gray-100';
-    }
-  }
-  
-  getConfidenceColor(confidence: number): string {
-    if (confidence >= 0.8) return 'text-green-600';
-    if (confidence >= 0.6) return 'text-yellow-600';
-    if (confidence >= 0.4) return 'text-orange-600';
-    return 'text-red-600';
-  }
-  
-  getRiskColor(risk: number): string {
-    if (risk <= 0.3) return 'text-green-600';
-    if (risk <= 0.6) return 'text-yellow-600';
-    if (risk <= 0.8) return 'text-orange-600';
-    return 'text-red-600';
-  }
-  
-  getImpactColor(impact: string): string {
-    switch (impact.toLowerCase()) {
-      case 'critical': return 'text-red-800 bg-red-200';
-      case 'high': return 'text-orange-800 bg-orange-200';
-      case 'medium': return 'text-yellow-800 bg-yellow-200';
-      case 'low': return 'text-green-800 bg-green-200';
-      default: return 'text-gray-800 bg-gray-200';
-    }
-  }
-  
-  formatCurrency(value: number): string {
-    if (value === undefined || value === null || isNaN(value)) {
-      return '$0.00';
-    }
-    return new Intl.NumberFormat('en-US', {
-      style: 'currency',
-      currency: 'USD'
-    }).format(value);
-  }
-  
-  formatPercent(value: any): string {
-    if (value === undefined || value === null || isNaN(value)) {
-      return '0.0%';
-    }
-    // Convert to number if it's a string
-    const numValue = typeof value === 'string' ? parseFloat(value) : value;
-    if (isNaN(numValue)) {
-      return '0.0%';
-    }
-    return `${(numValue * 100).toFixed(1)}%`;
-  }
-  
-  formatNumber(value: any, decimals: number = 2): string {
-    if (value === undefined || value === null || isNaN(value)) {
-      return `0.${'0'.repeat(decimals)}`;
-    }
-    // Convert to number if it's a string
-    const numValue = typeof value === 'string' ? parseFloat(value) : value;
-    if (isNaN(numValue)) {
-      return `0.${'0'.repeat(decimals)}`;
-    }
-    return numValue.toFixed(decimals);
-  }
+    if (this.dayForecasts.length > 0 && this.swingForecasts.length > 0) {
+      const symbol = this.selectedSymbol;
+      const dayForecast = this.dayForecasts.find(f => f.symbol === symbol);
+      const swingForecast = this.swingForecasts.find(f => f.symbol === symbol);
 
-  formatDateTime(dateTimeString: string): string {
-    if (!dateTimeString) {
-      return 'N/A';
-    }
-    try {
-      const date = new Date(dateTimeString);
-      return date.toLocaleString('en-US', {
-        month: 'short',
-        day: 'numeric',
-        hour: 'numeric',
-        minute: '2-digit',
-        hour12: true
-      });
-    } catch (e) {
-      return 'Invalid Date';
+      if (dayForecast && swingForecast) {
+        this.isLoadingComparison = true;
+        this.http.post<any>('http://localhost:8001/forecasting/compare-forecasts', { day_forecast: dayForecast, swing_forecast: swingForecast })
+          .pipe(catchError(error => { console.error('Error comparing forecasts:', error); this.isLoadingComparison = false; return of(null); }))
+          .subscribe(comparison => {
+            if (comparison) this.forecastComparison = comparison;
+            this.isLoadingComparison = false;
+          });
+      }
     }
   }
 
-  getTimeRemaining(dateTimeString: string): string {
-    if (!dateTimeString) {
-      return 'N/A';
-    }
-    try {
-      const targetDate = new Date(dateTimeString);
-      const now = new Date();
-      const diffMs = targetDate.getTime() - now.getTime();
-      
-      if (diffMs <= 0) {
-        return 'Expired';
-      }
-      
-      const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
-      const diffMinutes = Math.floor((diffMs % (1000 * 60 * 60)) / (1000 * 60));
-      
-      if (diffHours > 0) {
-        return `${diffHours}h ${diffMinutes}m`;
-      } else {
-        return `${diffMinutes}m`;
-      }
-    } catch (e) {
-      return 'N/A';
-    }
+  // --- Helper Methods ---
+
+  formatCurrency(value: number | undefined | null): string {
+    if (value === undefined || value === null) return '$0.00';
+    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value);
   }
-  
-  formatDate(dateString: string): string {
-    return new Date(dateString).toLocaleString();
+
+  formatPercent(value: number | undefined | null): string {
+    if (value === undefined || value === null) return '0%';
+    return new Intl.NumberFormat('en-US', { style: 'percent', minimumFractionDigits: 1, maximumFractionDigits: 1 }).format(value);
   }
-  
-  getTimeUntilExpiry(validUntil: string): string {
-    const now = new Date();
-    const expiry = new Date(validUntil);
-    const diff = expiry.getTime() - now.getTime();
-    
+
+  formatNumber(value: number | undefined | null, digits: number = 0): string {
+    if (value === undefined || value === null) return '0';
+    return new Intl.NumberFormat('en-US', { minimumFractionDigits: digits, maximumFractionDigits: digits }).format(value);
+  }
+
+  getTimeRemaining(validUntil: string): string {
+    if (!validUntil) return '';
+    const now = new Date().getTime();
+    const end = new Date(validUntil).getTime();
+    const diff = end - now;
+
     if (diff <= 0) return 'Expired';
-    
+
     const hours = Math.floor(diff / (1000 * 60 * 60));
-    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
-    
-    if (hours > 0) {
-      return `${hours}h ${minutes}m`;
-    } else {
-      return `${minutes}m`;
+    if (hours > 24) {
+      const days = Math.floor(hours / 24);
+      return `${days}d ${hours % 24}h`;
     }
+    const minutes = Math.floor((diff % (1000 * 60 * 60)) / (1000 * 60));
+    return `${hours}h ${minutes}m`;
   }
 
-  getSectorColor(sector: string): string {
-    switch (sector.toLowerCase()) {
-      case 'technology': return 'bg-blue-100 text-blue-800 border-blue-200';
-      case 'finance': return 'bg-green-100 text-green-800 border-green-200';
-      case 'healthcare': return 'bg-red-100 text-red-800 border-red-200';
-      case 'retail': return 'bg-purple-100 text-purple-800 border-purple-200';
-      default: return 'bg-gray-100 text-gray-800 border-gray-200';
-    }
+  getConfidenceColor(confidence: number): string {
+    if (confidence >= 0.8) return 'text-emerald-400';
+    if (confidence >= 0.6) return 'text-emerald-300';
+    if (confidence >= 0.4) return 'text-amber-400';
+    return 'text-red-400';
+  }
+
+  getRiskColor(risk: number): string {
+    if (risk < 0.3) return 'text-emerald-400';
+    if (risk < 0.6) return 'text-amber-400';
+    return 'text-red-400';
+  }
+
+  formatTimestamp(timestamp: string): string {
+    if (!timestamp) return '';
+    return new Date(timestamp).toLocaleString();
   }
 
   getSectorIcon(sector: string): string {
-    switch (sector.toLowerCase()) {
+    switch (sector?.toLowerCase()) {
       case 'technology': return '💻';
       case 'finance': return '💰';
       case 'healthcare': return '🏥';
@@ -1087,20 +798,19 @@ export class ForecastingDashboardComponent implements OnInit, OnDestroy {
     }
   }
 
-  formatTimestamp(timestamp: string): string {
-    const date = new Date(timestamp);
-    const now = new Date();
-    const diffMs = now.getTime() - date.getTime();
-    const diffMins = Math.floor(diffMs / 60000);
-    const diffHours = Math.floor(diffMs / 3600000);
-    
-    if (diffMins < 60) {
-      return `${diffMins}m ago`;
-    } else if (diffHours < 24) {
-      return `${diffHours}h ago`;
-    } else {
-      return date.toLocaleDateString();
-    }
+  formatMarkdown(text: string): SafeHtml {
+    if (!text) return '';
+    let html = text
+      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
+      .replace(/\n\n/g, '<br><br>')
+      .replace(/\n- /g, '<br>• ');
+
+    // @ts-ignore
+    return this.sanitizer.bypassSecurityTrustHtml(html);
+  }
+
+  isRAGSectorExpanded(sector: string): boolean {
+    return this.expandedRAGSectors.has(sector);
   }
 
   toggleRAGSectorExpansion(sector: string): void {
@@ -1109,72 +819,5 @@ export class ForecastingDashboardComponent implements OnInit, OnDestroy {
     } else {
       this.expandedRAGSectors.add(sector);
     }
-  }
-
-  isRAGSectorExpanded(sector: string): boolean {
-    return this.expandedRAGSectors.has(sector);
-  }
-
-  formatMarkdown(text: string): SafeHtml {
-    if (!text) return '';
-    
-    // Convert markdown to HTML
-    let html = text
-      // Headers
-      .replace(/### (.*?)$/gm, '<h3 class="font-bold text-base mt-3 mb-2">$1</h3>')
-      .replace(/## (.*?)$/gm, '<h2 class="font-bold text-lg mt-4 mb-2">$1</h2>')
-      .replace(/# (.*?)$/gm, '<h1 class="font-bold text-xl mt-4 mb-2">$1</h1>')
-      // Bold
-      .replace(/\*\*(.*?)\*\*/g, '<strong class="font-semibold">$1</strong>')
-      // Lists
-      .replace(/^\d+\.\s+(.*?)$/gm, '<li class="ml-4">$1</li>')
-      .replace(/^-\s+(.*?)$/gm, '<li class="ml-4">$1</li>')
-      .replace(/^\*\s+(.*?)$/gm, '<li class="ml-4">$1</li>')
-      // Line breaks
-      .replace(/\n\n/g, '<br><br>')
-      .replace(/\n/g, '<br>');
-    
-    // Wrap lists in ul tags
-    html = html.replace(/(<li class="ml-4">.*?<\/li>(?:<br>)?)+/g, (match) => {
-      return '<ul class="list-disc ml-4 space-y-1">' + match.replace(/<br>/g, '') + '</ul>';
-    });
-    
-    return this.sanitizer.sanitize(1, html) || '';
-  }
-
-  // Advanced Forecasting Methods
-  loadAdvancedForecasts(): void {
-    this.isLoadingAdvanced = true;
-    this.http.get<any>(`${this.apiUrl}/forecasting/advanced-forecasts`)
-      .subscribe({
-        next: (response) => {
-          if (response && response.forecasts) {
-            this.advancedForecasts = response.forecasts.filter((f: any) => f.status === 'success');
-            console.log(`Loaded ${this.advancedForecasts.length} advanced forecasts from ${response.agents_integrated.length} agents`);
-            
-            // Save to database
-            if (this.advancedForecasts.length > 0) {
-              this.http.post(`${this.apiUrl}/forecasting/advanced-forecasts/save`, response.forecasts)
-                .pipe(
-                  catchError(error => {
-                    console.error('Error saving advanced forecasts to database:', error);
-                    return of(null);
-                  })
-                )
-                .subscribe(saveResponse => {
-                  if (saveResponse) {
-                    console.log('Advanced forecasts saved to database:', saveResponse);
-                  }
-                });
-            }
-          }
-          this.isLoadingAdvanced = false;
-        },
-        error: (error) => {
-          console.error('Error loading advanced forecasts:', error);
-          this.error = 'Failed to load advanced forecasts';
-          this.isLoadingAdvanced = false;
-        }
-      });
   }
 }

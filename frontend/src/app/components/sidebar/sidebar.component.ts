@@ -20,50 +20,55 @@ interface NavigationSection {
   standalone: true,
   imports: [CommonModule, RouterModule],
   template: `
-    <div class="flex flex-col h-full">
+    <div class="flex flex-col h-full bg-slate-900 text-slate-300">
       <!-- Logo -->
-      <div class="flex items-center px-6 py-4 border-b border-gray-200">
-        <div class="flex items-center">
-          <div class="flex-shrink-0">
-            <div class="w-8 h-8 bg-primary-600 rounded-lg flex items-center justify-center">
-              <svg class="w-5 h-5 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
+      <div class="flex items-center px-6 py-6 border-b border-white/5">
+        <div class="flex items-center gap-3">
+          <div class="relative flex-shrink-0">
+            <div class="w-10 h-10 bg-indigo-500/10 rounded-xl flex items-center justify-center border border-indigo-500/20 shadow-[0_0_15px_rgba(99,102,241,0.3)]">
+              <!-- Market + AI Logo -->
+              <svg class="w-6 h-6 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z" class="opacity-50"></path>
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14" class="text-white"></path>
               </svg>
             </div>
+            <!-- Pulse Effect -->
+            <div class="absolute -inset-1 bg-indigo-500/20 rounded-xl blur-sm -z-10 animate-pulse"></div>
           </div>
-          <div class="ml-3">
-            <h1 class="text-lg font-semibold text-gray-900">AI Market Analysis</h1>
-            <p class="text-xs text-gray-500">v4.17.0</p>
+          <div class="flex flex-col">
+            <h1 class="text-xl font-bold text-white tracking-tight leading-none">NEXUS<span class="text-indigo-500">AI</span></h1>
+            <p class="text-[10px] text-gray-400 font-medium tracking-widest uppercase mt-1">Trading Systems</p>
           </div>
         </div>
       </div>
 
       <!-- Navigation -->
-      <nav class="flex-1 px-4 py-6 space-y-6 overflow-y-auto">
-        <div *ngFor="let section of navigationSections" class="space-y-1">
+      <nav class="flex-1 px-4 py-6 space-y-8 overflow-y-auto custom-scrollbar">
+        <div *ngFor="let section of navigationSections" class="space-y-2">
           <!-- Section Header -->
-          <div class="flex items-center justify-between">
-            <div class="text-xs font-semibold text-gray-500 uppercase tracking-wider">
+          <div class="flex items-center justify-between group cursor-pointer px-3 mb-2" (click)="toggleSection(section)">
+            <div class="text-xs font-bold text-gray-500 uppercase tracking-widest group-hover:text-gray-300 transition-colors">
               {{ section.title }}
             </div>
-            <button *ngIf="section.items.length > 4" 
-                    (click)="toggleSection(section)"
-                    class="text-gray-400 hover:text-gray-600 transition-colors">
-              <svg class="w-4 h-4 transform transition-transform" 
-                   [class.rotate-180]="!section.collapsed" 
+            <button *ngIf="section.items.length > 4"
+                    class="text-slate-600 hover:text-slate-400 transition-colors pr-2">
+              <svg class="w-4 h-4 transform transition-transform duration-200"
+                   [class.rotate-180]="!section.collapsed"
                    fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"></path>
               </svg>
             </button>
           </div>
-          
+
           <!-- Section Items -->
           <div class="space-y-1" [class.hidden]="section.collapsed">
-            <a *ngFor="let item of section.items" 
+            <a *ngFor="let item of section.items"
                [routerLink]="item.href"
                [class]="getNavItemClass(item)"
                (click)="setCurrentItem(item)">
-              <svg class="w-5 h-5 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+              <svg class="w-5 h-5 mr-3 transition-colors duration-200"
+                   [class]="item.current ? 'text-indigo-400' : 'text-slate-500 group-hover:text-slate-300'"
+                   fill="none" stroke="currentColor" viewBox="0 0 24 24">
                 <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" [attr.d]="item.icon"></path>
               </svg>
               {{ item.name }}
@@ -73,10 +78,10 @@ interface NavigationSection {
       </nav>
 
       <!-- Footer -->
-      <div class="px-4 py-4 border-t border-gray-200">
-        <div class="flex items-center text-sm text-gray-500">
-          <div class="w-2 h-2 bg-success-400 rounded-full mr-2"></div>
-          System Online
+      <div class="px-4 py-4 border-t border-slate-800 bg-slate-900/50 backdrop-blur-sm">
+        <div class="text-xs text-slate-500">
+            <span class="text-slate-600">Engineered by</span>
+            <span class="block font-medium text-slate-400 hover:text-indigo-400 transition-colors cursor-default">Qaim Raza Khan</span>
         </div>
       </div>
     </div>
@@ -227,7 +232,7 @@ export class SidebarComponent implements OnInit {
   ngOnInit() {
     // Set current item based on current route
     this.updateCurrentItem();
-    
+
     // Listen for route changes
     this.router.events.subscribe(() => {
       this.updateCurrentItem();
@@ -236,7 +241,7 @@ export class SidebarComponent implements OnInit {
 
   updateCurrentItem() {
     const currentUrl = this.router.url;
-    
+
     // Reset all items
     this.navigationSections.forEach(section => {
       section.items.forEach(item => {
@@ -252,7 +257,7 @@ export class SidebarComponent implements OnInit {
         navItem.current = false;
       });
     });
-    
+
     // Set current item
     item.current = true;
   }
@@ -263,11 +268,13 @@ export class SidebarComponent implements OnInit {
 
   getNavItemClass(item: NavigationItem): string {
     const baseClass = 'sidebar-nav-item flex items-center px-3 py-2 text-sm font-medium rounded-md transition-colors duration-200';
-    
+
     if (item.current) {
-      return `${baseClass} sidebar-nav-item-active bg-primary-100 text-primary-700`;
+      // Dark theme active state
+      return `${baseClass} sidebar-nav-item-active bg-indigo-500/10 text-indigo-400 border border-indigo-500/20 shadow-inner`;
     } else {
-      return `${baseClass} sidebar-nav-item-inactive text-gray-600 hover:bg-gray-50 hover:text-gray-900`;
+      // Dark theme inactive state
+      return `${baseClass} sidebar-nav-item-inactive text-slate-400 hover:bg-slate-800/80 hover:text-slate-200`;
     }
   }
 }

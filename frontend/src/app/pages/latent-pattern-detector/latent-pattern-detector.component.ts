@@ -62,28 +62,28 @@ export class LatentPatternDetectorComponent implements OnInit {
 
   getPatternTypeColor(patternType: string): string {
     switch (patternType.toLowerCase()) {
-      case 'trend': return 'bg-green-100 text-green-800';
-      case 'regime': return 'bg-blue-100 text-blue-800';
-      case 'anomaly': return 'bg-red-100 text-red-800';
-      case 'cyclical': return 'bg-yellow-100 text-yellow-800';
-      case 'volatility': return 'bg-purple-100 text-purple-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'trend': return 'bg-emerald-500/10 text-emerald-400 border border-emerald-500/20';
+      case 'regime': return 'bg-blue-500/10 text-blue-400 border border-blue-500/20';
+      case 'anomaly': return 'bg-red-500/10 text-red-400 border border-red-500/20';
+      case 'cyclical': return 'bg-amber-500/10 text-amber-400 border border-amber-500/20';
+      case 'volatility': return 'bg-purple-500/10 text-purple-400 border border-purple-500/20';
+      default: return 'bg-slate-500/10 text-slate-400 border border-slate-500/20';
     }
   }
 
   getMethodColor(method: string): string {
     switch (method.toLowerCase()) {
-      case 'pca': return 'bg-blue-100 text-blue-800';
-      case 'autoencoder': return 'bg-green-100 text-green-800';
-      case 'tsne': return 'bg-yellow-100 text-yellow-800';
-      case 'umap': return 'bg-purple-100 text-purple-800';
-      default: return 'bg-gray-100 text-gray-800';
+      case 'pca': return 'bg-blue-500/10 text-blue-400 border-blue-500/20';
+      case 'autoencoder': return 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20';
+      case 'tsne': return 'bg-amber-500/10 text-amber-400 border-amber-500/20';
+      case 'umap': return 'bg-purple-500/10 text-purple-400 border-purple-500/20';
+      default: return 'bg-slate-500/10 text-slate-400 border-slate-500/20';
     }
   }
 
   getConfidenceColor(confidence: number): string {
-    if (confidence >= 0.8) return 'text-green-600';
-    if (confidence >= 0.6) return 'text-yellow-600';
-    return 'text-red-600';
+    if (confidence >= 0.8) return 'text-emerald-400';
+    if (confidence >= 0.6) return 'text-amber-400';
+    return 'text-red-400';
   }
 }

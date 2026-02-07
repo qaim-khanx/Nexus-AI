@@ -16,13 +16,22 @@ export class AgentRouterComponent implements OnInit {
   agentWeights$: Observable<AgentWeight[]> | undefined;
   routingDecisions$: Observable<RoutingDecision[]> | undefined;
 
+  agentWeights: AgentWeight[] = [];
+  decisions: RoutingDecision[] = [];
+
   constructor(private systemStatusService: SystemStatusService) {}
 
   ngOnInit() {
     this.agentRouterSummary$ = this.systemStatusService.getAgentRouterSummary();
     this.marketRegime$ = this.systemStatusService.getMarketRegime();
-    this.agentWeights$ = this.systemStatusService.getAgentWeights();
-    this.routingDecisions$ = this.systemStatusService.getRoutingDecisions();
+
+    this.systemStatusService.getAgentWeights().subscribe(weights => {
+      this.agentWeights = weights;
+    });
+
+    this.systemStatusService.getRoutingDecisions().subscribe(decisions => {
+      this.decisions = decisions;
+    });
   }
 
   getRegimeColor(regime: string): string {

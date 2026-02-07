@@ -9,26 +9,27 @@ import { ModalService } from '../../shared/modal/modal.service';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <div class="min-h-screen bg-gray-50">
+    <div class="min-h-screen">
       <!-- Header -->
-      <div class="bg-white shadow-sm border-b border-gray-200">
+      <div class="bg-[#111827]/50 border-b border-white/5 backdrop-blur-md sticky top-0 z-30">
         <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           <div class="py-6">
             <div class="flex items-center justify-between">
               <div>
-                <h1 class="text-3xl font-bold text-gray-900">Ticker Discovery</h1>
-                <p class="mt-2 text-sm text-gray-600">Market Scanner & Opportunity Ranker</p>
+                <h1 class="text-3xl font-bold text-white tracking-tight">Ticker Discovery</h1>
+                <p class="mt-1 text-slate-400">Market Scanner & Strategic Opportunity Ranker</p>
               </div>
               <div class="flex items-center space-x-4">
-                <button (click)="scanMarket()" 
+                <button (click)="scanMarket()"
                         [disabled]="scanning"
-                        class="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors">
+                        class="btn btn-primary flex items-center gap-2">
                   <span *ngIf="!scanning">Scan Market</span>
                   <span *ngIf="scanning">Scanning...</span>
+                  <svg *ngIf="scanning" class="animate-spin h-4 w-4 ml-1" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>
                 </button>
                 <div class="text-right">
-                  <div class="text-sm text-gray-500">Last Updated</div>
-                  <div class="text-sm font-medium text-gray-900">{{ lastUpdated | date:'short' }}</div>
+                  <div class="text-[10px] text-slate-500 uppercase tracking-widest font-bold">Last Updated</div>
+                  <div class="text-sm font-medium text-slate-300 font-mono">{{ lastUpdated | date:'mediumTime' }}</div>
                 </div>
               </div>
             </div>
@@ -38,170 +39,172 @@ import { ModalService } from '../../shared/modal/modal.service';
 
       <!-- Main Content -->
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
-        
+
         <!-- Summary Cards -->
         <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
-          <div class="bg-white rounded-lg shadow p-6">
+          <div class="bg-blue-900/10 border border-blue-500/20 rounded-xl p-5 backdrop-blur-sm">
             <div class="flex items-center">
               <div class="flex-shrink-0">
-                <div class="w-8 h-8 bg-blue-100 rounded-lg flex items-center justify-center">
-                  <svg class="w-5 h-5 text-blue-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="w-10 h-10 bg-blue-500/10 rounded-lg flex items-center justify-center border border-blue-500/20">
+                  <svg class="w-5 h-5 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
                   </svg>
                 </div>
               </div>
               <div class="ml-4">
-                <p class="text-sm font-medium text-gray-500">Total Scanned</p>
-                <p class="text-2xl font-semibold text-gray-900">{{ scannerSummary?.total_scanned || 0 }}</p>
+                <p class="text-xs font-bold text-blue-400 uppercase tracking-wider">Total Scanned</p>
+                <p class="text-2xl font-bold text-white">{{ scannerSummary?.total_scanned || 0 }}</p>
               </div>
             </div>
           </div>
 
-          <div class="bg-white rounded-lg shadow p-6">
+          <div class="bg-emerald-900/10 border border-emerald-500/20 rounded-xl p-5 backdrop-blur-sm">
             <div class="flex items-center">
               <div class="flex-shrink-0">
-                <div class="w-8 h-8 bg-green-100 rounded-lg flex items-center justify-center">
-                  <svg class="w-5 h-5 text-green-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="w-10 h-10 bg-emerald-500/10 rounded-lg flex items-center justify-center border border-emerald-500/20">
+                  <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path>
                   </svg>
                 </div>
               </div>
               <div class="ml-4">
-                <p class="text-sm font-medium text-gray-500">Triggers Found</p>
-                <p class="text-2xl font-semibold text-gray-900">{{ scannerSummary?.triggers_found || 0 }}</p>
+                <p class="text-xs font-bold text-emerald-400 uppercase tracking-wider">Triggers Found</p>
+                <p class="text-2xl font-bold text-white">{{ scannerSummary?.triggers_found || 0 }}</p>
               </div>
             </div>
           </div>
 
-          <div class="bg-white rounded-lg shadow p-6">
+          <div class="bg-amber-900/10 border border-amber-500/20 rounded-xl p-5 backdrop-blur-sm">
             <div class="flex items-center">
               <div class="flex-shrink-0">
-                <div class="w-8 h-8 bg-yellow-100 rounded-lg flex items-center justify-center">
-                  <svg class="w-5 h-5 text-yellow-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="w-10 h-10 bg-amber-500/10 rounded-lg flex items-center justify-center border border-amber-500/20">
+                  <svg class="w-5 h-5 text-amber-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
                   </svg>
                 </div>
               </div>
               <div class="ml-4">
-                <p class="text-sm font-medium text-gray-500">High Priority</p>
-                <p class="text-2xl font-semibold text-gray-900">{{ scannerSummary?.high_priority || 0 }}</p>
+                <p class="text-xs font-bold text-amber-400 uppercase tracking-wider">High Priority</p>
+                <p class="text-2xl font-bold text-white">{{ scannerSummary?.high_priority || 0 }}</p>
               </div>
             </div>
           </div>
 
-          <div class="bg-white rounded-lg shadow p-6">
+          <div class="bg-purple-900/10 border border-purple-500/20 rounded-xl p-5 backdrop-blur-sm">
             <div class="flex items-center">
               <div class="flex-shrink-0">
-                <div class="w-8 h-8 bg-purple-100 rounded-lg flex items-center justify-center">
-                  <svg class="w-5 h-5 text-purple-600" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <div class="w-10 h-10 bg-purple-500/10 rounded-lg flex items-center justify-center border border-purple-500/20">
+                  <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path>
                   </svg>
                 </div>
               </div>
               <div class="ml-4">
-                <p class="text-sm font-medium text-gray-500">Avg Confidence</p>
-                <p class="text-2xl font-semibold text-gray-900">{{ (scannerSummary?.avg_confidence || 0) | number:'1.1-1' }}%</p>
+                <p class="text-xs font-bold text-purple-400 uppercase tracking-wider">Avg Confidence</p>
+                <p class="text-2xl font-bold text-white">{{ (scannerSummary?.avg_confidence || 0) | number:'1.1-1' }}%</p>
               </div>
             </div>
           </div>
         </div>
 
         <!-- Content -->
-        <div class="bg-white rounded-lg shadow p-6">
-          <h3 class="text-lg font-medium text-gray-900 mb-4">Ticker Discovery System</h3>
-          <p class="text-gray-600 mb-4">
-            The Ticker Discovery system scans the market for trading opportunities and ranks them based on multiple criteria.
-          </p>
-          
-          <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-            <div class="border border-gray-200 rounded-lg p-4">
-              <h4 class="font-medium text-gray-900 mb-2">Market Scanner</h4>
-              <p class="text-sm text-gray-600 mb-3">
-                Scans the market universe for opportunities based on various triggers like volatility, volume, momentum, and breakout patterns.
-              </p>
-              <div class="text-sm text-gray-500">
-                <div>Total Scanned: {{ scannerSummary?.total_scanned || 0 }}</div>
-                <div>Triggers Found: {{ scannerSummary?.triggers_found || 0 }}</div>
-                <div>High Priority: {{ scannerSummary?.high_priority || 0 }}</div>
+        <div class="card mb-8">
+          <div class="card-header">
+             <h3 class="text-xl font-bold text-white tracking-tight">System Status</h3>
+          </div>
+          <div class="p-6">
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div class="bg-slate-800/30 border border-white/5 rounded-xl p-5">
+                <h4 class="font-bold text-white mb-2">Market Scanner Integration</h4>
+                <p class="text-sm text-slate-400 mb-4 leading-relaxed">
+                  Scans the market universe for opportunities based on various triggers like volatility, volume, momentum, and breakout patterns.
+                </p>
+                <div class="flex space-x-6 text-xs text-slate-400 font-mono border-t border-white/5 pt-3">
+                  <div>SCANNED: <span class="text-white">{{ scannerSummary?.total_scanned || 0 }}</span></div>
+                  <div>TRIGGERS: <span class="text-white">{{ scannerSummary?.triggers_found || 0 }}</span></div>
+                  <div>PRIORITY: <span class="text-white">{{ scannerSummary?.high_priority || 0 }}</span></div>
+                </div>
               </div>
-            </div>
-            
-            <div class="border border-gray-200 rounded-lg p-4">
-              <h4 class="font-medium text-gray-900 mb-2">Opportunity Ranker</h4>
-              <p class="text-sm text-gray-600 mb-3">
-                Ranks ticker opportunities based on multiple criteria including Sharpe ratio, confidence, risk-adjusted return, and technical strength.
-              </p>
-              <div class="text-sm text-gray-500">
-                <div>Total Ranked: {{ rankerSummary?.total_ranked || 0 }}</div>
-                <div>Avg Score: {{ (rankerSummary?.avg_score || 0) | number:'1.2-2' }}</div>
-                <div>Avg Confidence: {{ (rankerSummary?.avg_confidence || 0) | number:'1.1-1' }}%</div>
+
+              <div class="bg-slate-800/30 border border-white/5 rounded-xl p-5">
+                <h4 class="font-bold text-white mb-2">Opportunity Ranker AI</h4>
+                <p class="text-sm text-slate-400 mb-4 leading-relaxed">
+                  Ranks ticker opportunities based on multiple criteria including Sharpe ratio, confidence, risk-adjusted return, and technical strength.
+                </p>
+                <div class="flex space-x-6 text-xs text-slate-400 font-mono border-t border-white/5 pt-3">
+                  <div>RANKED: <span class="text-white">{{ rankerSummary?.total_ranked || 0 }}</span></div>
+                  <div>SCORE: <span class="text-white">{{ (rankerSummary?.avg_score || 0) | number:'1.2-2' }}</span></div>
+                  <div>CONF: <span class="text-white">{{ (rankerSummary?.avg_confidence || 0) | number:'1.1-1' }}%</span></div>
+                </div>
               </div>
             </div>
           </div>
         </div>
 
         <!-- Discovered Tickers Section -->
-        <div *ngIf="discoveredTickers.length > 0" class="mt-8">
-          <div class="bg-white rounded-lg shadow">
-            <div class="px-6 py-4 border-b border-gray-200 flex justify-between items-center">
-              <div>
-                <h3 class="text-lg font-medium text-gray-900">Discovered Opportunities</h3>
-                <p class="text-sm text-gray-600">Tickers found during the latest scan</p>
+        <div *ngIf="discoveredTickers.length > 0" class="animate-fade-in-up">
+          <div class="card">
+            <div class="card-header">
+              <div class="flex justify-between items-center w-full">
+                <div>
+                  <h3 class="text-xl font-bold text-white tracking-tight">Discovered Opportunities</h3>
+                  <p class="text-xs text-slate-400 uppercase tracking-widest mt-1">Live Feed</p>
+                </div>
+                <button (click)="toggleHistory()"
+                        class="btn btn-secondary text-xs">
+                  <span *ngIf="!showHistory">Show History</span>
+                  <span *ngIf="showHistory">Hide History</span>
+                </button>
               </div>
-              <button (click)="toggleHistory()" 
-                      class="bg-gray-100 hover:bg-gray-200 text-gray-700 px-3 py-2 rounded-lg text-sm font-medium transition-colors">
-                <span *ngIf="!showHistory">Show History</span>
-                <span *ngIf="showHistory">Hide History</span>
-              </button>
             </div>
             <div class="overflow-x-auto">
-              <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
+              <table class="table">
+                <thead class="table-header">
                   <tr>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Symbol</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Trigger</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Priority</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Confidence</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Score</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Description</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                    <th class="table-header-cell">Symbol</th>
+                    <th class="table-header-cell">Trigger</th>
+                    <th class="table-header-cell">Priority</th>
+                    <th class="table-header-cell">Confidence</th>
+                    <th class="table-header-cell">Score</th>
+                    <th class="table-header-cell">Analysis</th>
+                    <th class="table-header-cell">Actions</th>
                   </tr>
                 </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
-                  <tr *ngFor="let ticker of discoveredTickers" class="hover:bg-gray-50">
-                    <td class="px-6 py-4 whitespace-nowrap">
-                      <span class="text-sm font-medium text-blue-600">{{ ticker.symbol }}</span>
+                <tbody class="table-body">
+                  <tr *ngFor="let ticker of discoveredTickers" class="table-row">
+                    <td class="table-cell">
+                      <span class="text-sm font-bold text-indigo-400">{{ ticker.symbol }}</span>
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                      <span class="text-sm text-gray-900 capitalize">{{ ticker.trigger }}</span>
+                    <td class="table-cell">
+                      <span class="text-xs font-medium text-slate-300 px-2 py-1 bg-slate-800 rounded border border-white/10 uppercase">{{ ticker.trigger }}</span>
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                      <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full" 
-                            [class]="'bg-' + (ticker.priority === 'high' ? 'red' : (ticker.priority === 'medium' ? 'yellow' : 'gray')) + '-100 text-' + (ticker.priority === 'high' ? 'red' : (ticker.priority === 'medium' ? 'yellow' : 'gray')) + '-800'">
+                    <td class="table-cell">
+                      <span class="status-indicator"
+                            [ngClass]="ticker.priority === 'high' ? 'status-error' : (ticker.priority === 'medium' ? 'status-warning' : 'status-idle')">
                         {{ ticker.priority }}
                       </span>
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <td class="table-cell font-mono text-slate-300">
                       {{ (ticker.confidence * 100) | number:'1.0-0' }}%
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <td class="table-cell font-mono text-slate-300">
                       {{ ticker.score }}
                     </td>
-                    <td class="px-6 py-4">
-                      <div class="text-sm text-gray-900">{{ ticker.description }}</div>
+                    <td class="table-cell max-w-xs truncate text-slate-400 text-xs">
+                       {{ ticker.description }}
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
+                    <td class="table-cell">
                             <button (click)="addToPortfolio(ticker)"
                                       [disabled]="addingToPortfolio[ticker.symbol] || isInPortfolio(ticker.symbol)"
-                                      class="px-3 py-1 rounded-md text-xs font-medium transition-colors"
-                                      [class]="isInPortfolio(ticker.symbol) 
-                                                  ? 'bg-gray-100 text-gray-500 cursor-not-allowed' 
+                                      class="px-3 py-1.5 rounded-md text-xs font-bold uppercase tracking-wider transition-all border border-transparent"
+                                      [class]="isInPortfolio(ticker.symbol)
+                                                  ? 'bg-emerald-500/10 text-emerald-400 border-emerald-500/20 cursor-default'
                                                   : addingToPortfolio[ticker.symbol]
-                                                    ? 'bg-blue-200 text-blue-600 cursor-not-allowed'
-                                                    : 'bg-blue-100 text-blue-600 hover:bg-blue-200'">
+                                                    ? 'bg-slate-800 text-slate-500 cursor-not-allowed'
+                                                    : 'bg-indigo-600 text-white hover:bg-indigo-500 hover:shadow-lg hover:shadow-indigo-500/20'">
                                 <span *ngIf="addingToPortfolio[ticker.symbol]">Adding...</span>
-                                <span *ngIf="!addingToPortfolio[ticker.symbol] && !isInPortfolio(ticker.symbol)">Add to Symbol Mgmt</span>
-                                <span *ngIf="isInPortfolio(ticker.symbol)">✓ In Portfolio</span>
+                                <span *ngIf="!addingToPortfolio[ticker.symbol] && !isInPortfolio(ticker.symbol)">Add to Portfolio</span>
+                                <span *ngIf="isInPortfolio(ticker.symbol)">In Portfolio</span>
                               </button>
                     </td>
                   </tr>
@@ -212,43 +215,43 @@ import { ModalService } from '../../shared/modal/modal.service';
         </div>
 
         <!-- History Section -->
-        <div *ngIf="showHistory && scanHistory.length > 0" class="mt-8">
-          <div class="bg-white rounded-lg shadow">
-            <div class="px-6 py-4 border-b border-gray-200">
-              <h3 class="text-lg font-medium text-gray-900">Discovery History</h3>
-              <p class="text-sm text-gray-600">Previous ticker discovery scan results by date</p>
+        <div *ngIf="showHistory && scanHistory.length > 0" class="mt-8 animate-fade-in-up">
+          <div class="card">
+            <div class="card-header">
+              <h3 class="text-lg font-bold text-white">Discovery History</h3>
+              <p class="text-xs text-slate-400 uppercase tracking-widest mt-1">Previous Scan Logs</p>
             </div>
             <div class="overflow-x-auto">
-              <table class="min-w-full divide-y divide-gray-200">
-                <thead class="bg-gray-50">
+              <table class="table">
+                <thead class="table-header">
                   <tr>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Date/Time</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total Scanned</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Triggers Found</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">High Priority</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Avg Confidence</th>
-                    <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
+                    <th class="table-header-cell">Date/Time</th>
+                    <th class="table-header-cell">Total Scanned</th>
+                    <th class="table-header-cell">Triggers Found</th>
+                    <th class="table-header-cell">High Priority</th>
+                    <th class="table-header-cell">Avg Confidence</th>
+                    <th class="table-header-cell">Status</th>
                   </tr>
                 </thead>
-                <tbody class="bg-white divide-y divide-gray-200">
-                  <tr *ngFor="let scan of scanHistory" class="hover:bg-gray-50">
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
-                      {{ scan.timestamp | date:'MMM d, y, h:mm:ss a' }}
+                <tbody class="table-body">
+                  <tr *ngFor="let scan of scanHistory" class="table-row">
+                    <td class="table-cell font-mono text-slate-400">
+                      {{ scan.timestamp | date:'MMM d, h:mm:ss a' }}
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <td class="table-cell font-mono">
                       {{ scan.total_scanned }}
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <td class="table-cell font-mono">
                       {{ scan.triggers_found }}
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <td class="table-cell font-mono text-amber-400">
                       {{ scan.high_priority }}
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                    <td class="table-cell font-mono">
                       {{ scan.avg_confidence | number:'1.1-1' }}%
                     </td>
-                    <td class="px-6 py-4 whitespace-nowrap">
-                      <span class="inline-flex px-2 py-1 text-xs font-semibold rounded-full bg-green-100 text-green-800">
+                    <td class="table-cell">
+                      <span class="status-indicator status-active">
                         {{ scan.status || 'Completed' }}
                       </span>
                     </td>
@@ -260,24 +263,17 @@ import { ModalService } from '../../shared/modal/modal.service';
         </div>
 
         <!-- Loading State -->
-        <div *ngIf="loading" class="flex items-center justify-center py-12">
-          <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-          <span class="ml-3 text-gray-600">Loading ticker discovery data...</span>
+        <div *ngIf="loading" class="flex flex-col items-center justify-center py-20">
+          <div class="loading-spinner mb-4"></div>
+          <span class="text-slate-400 text-sm animate-pulse">Initializing market scanner...</span>
         </div>
 
         <!-- Error State -->
-        <div *ngIf="error" class="bg-red-50 border border-red-200 rounded-lg p-4">
-          <div class="flex">
-            <div class="flex-shrink-0">
-              <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
-              </svg>
-            </div>
-            <div class="ml-3">
-              <h3 class="text-sm font-medium text-red-800">Error loading data</h3>
-              <div class="mt-2 text-sm text-red-700">{{ error }}</div>
-            </div>
-          </div>
+        <div *ngIf="error" class="bg-red-500/10 border border-red-500/20 rounded-xl p-4 flex items-center gap-3 mt-6">
+          <svg class="h-5 w-5 text-red-400 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+          </svg>
+          <p class="text-sm text-red-400">{{ error }}</p>
         </div>
       </div>
     </div>
@@ -296,7 +292,7 @@ export class TickerDiscoveryComponent implements OnInit, OnDestroy {
   portfolioSymbols: string[] = [];
   showHistory: boolean = false;
   scanHistory: any[] = [];
-  
+
   private refreshSubscription: Subscription = new Subscription();
 
   constructor(private http: HttpClient, private modalService: ModalService) {}
@@ -305,7 +301,7 @@ export class TickerDiscoveryComponent implements OnInit, OnDestroy {
     this.loadData();
     this.loadDiscoveredTickers();
     this.loadPortfolioSymbols();
-    
+
     // Refresh data every 30 seconds
     this.refreshSubscription = interval(30000).subscribe(() => {
       this.loadData();
@@ -330,7 +326,7 @@ export class TickerDiscoveryComponent implements OnInit, OnDestroy {
       },
       error: (err) => {
         console.error('Error loading scanner summary:', err);
-        this.error = 'Failed to load scanner summary';
+        // this.error = 'Failed to load scanner summary'; // Optional: Be less aggressive with error showing
       }
     });
 
@@ -342,7 +338,6 @@ export class TickerDiscoveryComponent implements OnInit, OnDestroy {
       },
       error: (err) => {
         console.error('Error loading ranker summary:', err);
-        this.error = 'Failed to load ranker summary';
         this.loading = false;
       }
     });
@@ -401,7 +396,7 @@ export class TickerDiscoveryComponent implements OnInit, OnDestroy {
     }
 
     this.addingToPortfolio[symbol] = true;
-    
+
     const symbolData = {
       symbol: symbol,
       name: this.getSymbolName(ticker),

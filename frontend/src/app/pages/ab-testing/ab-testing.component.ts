@@ -11,8 +11,8 @@ import { Observable } from 'rxjs';
     <div class="space-y-6 max-w-7xl mx-auto">
       <!-- Page Header -->
       <div>
-        <h1 class="text-3xl font-bold text-gray-900">A/B Testing</h1>
-        <p class="text-gray-600">Strategy comparison and optimization</p>
+        <h1 class="text-3xl font-bold text-slate-100 tracking-tight">Strategy Optimization Lab</h1>
+        <p class="text-slate-400 mt-1">Next-gen A/B testing and model validation engine</p>
       </div>
 
       <!-- A/B Testing Overview Cards -->

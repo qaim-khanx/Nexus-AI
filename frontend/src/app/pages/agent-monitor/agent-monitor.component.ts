@@ -11,13 +11,13 @@ import { Observable } from 'rxjs';
     <div class="space-y-6 max-w-7xl mx-auto">
       <!-- Page Header -->
       <div>
-        <h1 class="text-3xl font-bold text-gray-900">Agent Monitor</h1>
-        <p class="text-gray-600">Agent performance tracking and online learning</p>
+        <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Agent Monitor</h1>
+        <p class="text-gray-600 dark:text-gray-400">Agent performance tracking and online learning</p>
         <!-- Loading indicator -->
         <div *ngIf="isLoadingSummary || isLoadingMetrics || isLoadingLearning || isLoadingFeedback" class="mt-4 flex items-center justify-center">
           <div class="flex items-center space-x-3">
             <div class="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-500"></div>
-            <span class="text-sm text-gray-600">Loading agent data...</span>
+            <span class="text-sm text-gray-600 dark:text-gray-400">Loading agent data...</span>
           </div>
         </div>
       </div>
@@ -25,7 +25,7 @@ import { Observable } from 'rxjs';
       <!-- Agent Monitor Overview Cards -->
       <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
         <ng-container *ngIf="agentMonitorSummary$ | async as summary; else summaryLoading">
-        <div class="metric-card-enhanced">
+        <div class="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-white/5 p-6 flex flex-col justify-center relative overflow-hidden transition-all duration-300 hover:shadow-lg dark:hover:bg-slate-800/80">
           <div class="flex items-center justify-between">
             <div class="flex items-center">
               <div class="flex-shrink-0">
@@ -36,8 +36,8 @@ import { Observable } from 'rxjs';
                 </div>
               </div>
               <div class="ml-4">
-                <p class="text-sm font-medium text-gray-600">Healthy Agents</p>
-                <p class="text-2xl font-bold text-gray-900">{{ summary.healthy_agents }}/{{ summary.total_agents }}</p>
+                <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Healthy Agents</p>
+                <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ summary.healthy_agents }}/{{ summary.total_agents }}</p>
               </div>
             </div>
             <div class="flex items-center">
@@ -46,7 +46,7 @@ import { Observable } from 'rxjs';
           </div>
         </div>
 
-        <div class="metric-card-enhanced">
+        <div class="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-white/5 p-6 flex flex-col justify-center relative overflow-hidden transition-all duration-300 hover:shadow-lg dark:hover:bg-slate-800/80">
           <div class="flex items-center justify-between">
             <div class="flex items-center">
               <div class="flex-shrink-0">
@@ -57,18 +57,18 @@ import { Observable } from 'rxjs';
                 </div>
               </div>
               <div class="ml-4">
-                <p class="text-sm font-medium text-gray-600">Avg Accuracy</p>
-                <p class="text-2xl font-bold text-gray-900">{{ (summary.avg_accuracy * 100) | number:'1.1-1' }}%</p>
+                <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Avg Accuracy</p>
+                <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ (summary.avg_accuracy * 100) | number:'1.1-1' }}%</p>
               </div>
             </div>
             <div class="text-right">
-              <p class="text-xs text-gray-500">Sharpe Ratio</p>
-              <p class="text-sm font-semibold text-blue-600">{{ summary.avg_sharpe_ratio | number:'1.2-2' }}</p>
+              <p class="text-xs text-gray-500 dark:text-gray-400">Sharpe Ratio</p>
+              <p class="text-sm font-semibold text-blue-600 dark:text-blue-400">{{ summary.avg_sharpe_ratio | number:'1.2-2' }}</p>
             </div>
           </div>
         </div>
 
-        <div class="metric-card-enhanced">
+        <div class="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-white/5 p-6 flex flex-col justify-center relative overflow-hidden transition-all duration-300 hover:shadow-lg dark:hover:bg-slate-800/80">
           <div class="flex items-center justify-between">
             <div class="flex items-center">
               <div class="flex-shrink-0">
@@ -79,18 +79,18 @@ import { Observable } from 'rxjs';
                 </div>
               </div>
               <div class="ml-4">
-                <p class="text-sm font-medium text-gray-600">Online Learning</p>
-                <p class="text-2xl font-bold text-gray-900">{{ summary.online_learning_enabled ? 'Active' : 'Inactive' }}</p>
+                <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Online Learning</p>
+                <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ summary.online_learning_enabled ? 'Active' : 'Inactive' }}</p>
               </div>
             </div>
             <div class="text-right">
-              <p class="text-xs text-gray-500">Samples</p>
-              <p class="text-sm font-semibold text-purple-600">{{ summary.total_feedback_samples | number }}</p>
+              <p class="text-xs text-gray-500 dark:text-gray-400">Samples</p>
+              <p class="text-sm font-semibold text-purple-600 dark:text-purple-400">{{ summary.total_feedback_samples | number }}</p>
             </div>
           </div>
         </div>
 
-        <div class="metric-card-enhanced">
+        <div class="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-white/5 p-6 flex flex-col justify-center relative overflow-hidden transition-all duration-300 hover:shadow-lg dark:hover:bg-slate-800/80">
           <div class="flex items-center justify-between">
             <div class="flex items-center">
               <div class="flex-shrink-0">
@@ -101,31 +101,31 @@ import { Observable } from 'rxjs';
                 </div>
               </div>
               <div class="ml-4">
-                <p class="text-sm font-medium text-gray-600">Need Attention</p>
-                <p class="text-2xl font-bold text-gray-900">{{ summary.agents_needing_attention }}</p>
+                <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Need Attention</p>
+                <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ summary.agents_needing_attention }}</p>
               </div>
             </div>
             <div class="text-right">
-              <p class="text-xs text-gray-500">Win Rate</p>
-              <p class="text-sm font-semibold text-amber-600">{{ (summary.avg_win_rate * 100) | number:'1.1-1' }}%</p>
+              <p class="text-xs text-gray-500 dark:text-gray-400">Win Rate</p>
+              <p class="text-sm font-semibold text-amber-600 dark:text-amber-400">{{ (summary.avg_win_rate * 100) | number:'1.1-1' }}%</p>
             </div>
           </div>
         </div>
         </ng-container>
-        
+
         <!-- Loading template for summary cards -->
         <ng-template #summaryLoading>
           <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-            <div *ngFor="let i of [1,2,3,4]" class="metric-card-enhanced animate-pulse">
+            <div *ngFor="let i of [1,2,3,4]" class="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-white/5 p-6 animate-pulse">
               <div class="flex items-center justify-between">
                 <div class="flex items-center">
-                  <div class="w-12 h-12 bg-gray-300 rounded-xl"></div>
+                  <div class="w-12 h-12 bg-gray-200 dark:bg-slate-700 rounded-xl"></div>
                   <div class="ml-4">
-                    <div class="h-4 bg-gray-300 rounded w-20 mb-2"></div>
-                    <div class="h-6 bg-gray-300 rounded w-12"></div>
+                    <div class="h-4 bg-gray-200 dark:bg-slate-700 rounded w-20 mb-2"></div>
+                    <div class="h-6 bg-gray-200 dark:bg-slate-700 rounded w-12"></div>
                   </div>
                 </div>
-                <div class="w-3 h-3 bg-gray-300 rounded-full"></div>
+                <div class="w-3 h-3 bg-gray-200 dark:bg-slate-700 rounded-full"></div>
               </div>
             </div>
           </div>
@@ -133,27 +133,27 @@ import { Observable } from 'rxjs';
       </div>
 
       <!-- Agent Performance Table -->
-      <div class="metric-card-enhanced">
+      <div class="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-white/5 flex flex-col justify-center relative overflow-hidden transition-all duration-300 dark:shadow-[0_4px_6px_-1px_rgba(0,0,0,0.3)]">
         <ng-container *ngIf="agentPerformanceMetrics$ | async as metrics; else metricsLoading">
-        <div class="px-6 py-4 border-b border-gray-200">
-          <h3 class="text-lg font-medium text-gray-900">Agent Performance Metrics</h3>
-          <p class="text-sm text-gray-600">Real-time performance tracking for all agents</p>
+        <div class="px-6 py-4 border-b border-gray-200 dark:border-white/5 bg-gray-50/50 dark:bg-white/[0.02]">
+          <h3 class="text-lg font-medium text-gray-900 dark:text-white">Agent Performance Metrics</h3>
+          <p class="text-sm text-gray-600 dark:text-gray-400">Real-time performance tracking for all agents</p>
         </div>
         <div class="overflow-x-auto">
-          <table class="min-w-full divide-y divide-gray-200">
-            <thead class="bg-gray-50">
+          <table class="min-w-full divide-y divide-gray-200 dark:divide-white/5">
+            <thead class="bg-gray-50 dark:bg-white/[0.02]">
               <tr>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Agent</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Accuracy</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sharpe Ratio</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Win Rate</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Health Score</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Trend</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Predictions</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Agent</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Accuracy</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Sharpe Ratio</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Win Rate</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Health Score</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Trend</th>
+                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 dark:text-gray-400 uppercase tracking-wider">Predictions</th>
               </tr>
             </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
-              <tr *ngFor="let metric of metrics" class="hover:bg-gray-50">
+            <tbody class="bg-white dark:bg-transparent divide-y divide-gray-200 dark:divide-white/5">
+              <tr *ngFor="let metric of metrics" class="hover:bg-gray-50 dark:hover:bg-white/[0.02]">
                 <td class="px-6 py-4 whitespace-nowrap">
                   <div class="flex items-center">
                     <div class="flex-shrink-0 h-8 w-8">
@@ -162,26 +162,26 @@ import { Observable } from 'rxjs';
                       </div>
                     </div>
                     <div class="ml-4">
-                      <div class="text-sm font-medium text-gray-900">{{ metric.agent_name }}</div>
-                      <div class="text-sm text-gray-500">Last: {{ metric.last_prediction_time | date:'short' }}</div>
+                      <div class="text-sm font-medium text-gray-900 dark:text-white">{{ metric.agent_name }}</div>
+                      <div class="text-sm text-gray-500 dark:text-gray-400">Last: {{ metric.last_prediction_time | date:'short' }}</div>
                     </div>
                   </div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
-                  <div class="text-sm font-medium text-gray-900">{{ (metric.accuracy * 100) | number:'1.1-1' }}%</div>
-                  <div class="text-sm text-gray-500">{{ metric.correct_predictions }}/{{ metric.total_predictions }}</div>
+                  <div class="text-sm font-medium text-gray-900 dark:text-white">{{ (metric.accuracy * 100) | number:'1.1-1' }}%</div>
+                  <div class="text-sm text-gray-500 dark:text-gray-400">{{ metric.correct_predictions }}/{{ metric.total_predictions }}</div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
-                  <div class="text-sm font-medium text-gray-900">{{ metric.sharpe_ratio | number:'1.2-2' }}</div>
-                  <div class="text-sm text-gray-500">Conf: {{ (metric.avg_confidence * 100) | number:'1.1-1' }}%</div>
+                  <div class="text-sm font-medium text-gray-900 dark:text-white">{{ metric.sharpe_ratio | number:'1.2-2' }}</div>
+                  <div class="text-sm text-gray-500 dark:text-gray-400">Conf: {{ (metric.avg_confidence * 100) | number:'1.1-1' }}%</div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
-                  <div class="text-sm font-medium text-gray-900">{{ (metric.win_rate * 100) | number:'1.1-1' }}%</div>
+                  <div class="text-sm font-medium text-gray-900 dark:text-white">{{ (metric.win_rate * 100) | number:'1.1-1' }}%</div>
                 </td>
                 <td class="px-6 py-4 whitespace-nowrap">
                   <div class="flex items-center">
-                    <div class="text-sm font-medium text-gray-900">{{ metric.health_score | number:'1.1-1' }}</div>
-                    <div class="ml-2 w-16 bg-gray-200 rounded-full h-2">
+                    <div class="text-sm font-medium text-gray-900 dark:text-white">{{ metric.health_score | number:'1.1-1' }}</div>
+                    <div class="ml-2 w-16 bg-gray-200 dark:bg-slate-700 rounded-full h-2">
                       <div class="h-2 rounded-full" [class]="getHealthBarColor(metric.health_score)" [style.width.%]="metric.health_score"></div>
                     </div>
                   </div>
@@ -191,7 +191,7 @@ import { Observable } from 'rxjs';
                     {{ metric.performance_trend }}
                   </span>
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900">
+                <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-900 dark:text-white">
                   {{ metric.total_predictions | number }}
                 </td>
               </tr>
@@ -199,26 +199,26 @@ import { Observable } from 'rxjs';
           </table>
         </div>
         </ng-container>
-        
+
         <!-- Loading template for performance table -->
         <ng-template #metricsLoading>
-          <div class="px-6 py-4 border-b border-gray-200">
-            <h3 class="text-lg font-medium text-gray-900">Agent Performance Metrics</h3>
-            <p class="text-sm text-gray-600">Real-time performance tracking for all agents</p>
+          <div class="px-6 py-4 border-b border-gray-200 dark:border-white/5 bg-gray-50/50 dark:bg-white/[0.02]">
+            <h3 class="text-lg font-medium text-gray-900 dark:text-white">Agent Performance Metrics</h3>
+            <p class="text-sm text-gray-600 dark:text-gray-400">Real-time performance tracking for all agents</p>
           </div>
           <div class="p-6 animate-pulse">
             <div class="space-y-4">
               <div *ngFor="let i of [1,2,3,4,5]" class="flex items-center space-x-4">
-                <div class="w-8 h-8 bg-gray-300 rounded-full"></div>
+                <div class="w-8 h-8 bg-gray-200 dark:bg-slate-700 rounded-full"></div>
                 <div class="flex-1 space-y-2">
-                  <div class="h-4 bg-gray-300 rounded w-24"></div>
-                  <div class="h-3 bg-gray-300 rounded w-16"></div>
+                  <div class="h-4 bg-gray-200 dark:bg-slate-700 rounded w-24"></div>
+                  <div class="h-3 bg-gray-200 dark:bg-slate-700 rounded w-16"></div>
                 </div>
-                <div class="w-16 h-4 bg-gray-300 rounded"></div>
-                <div class="w-16 h-4 bg-gray-300 rounded"></div>
-                <div class="w-16 h-4 bg-gray-300 rounded"></div>
-                <div class="w-16 h-4 bg-gray-300 rounded"></div>
-                <div class="w-16 h-4 bg-gray-300 rounded"></div>
+                <div class="w-16 h-4 bg-gray-200 dark:bg-slate-700 rounded"></div>
+                <div class="w-16 h-4 bg-gray-200 dark:bg-slate-700 rounded"></div>
+                <div class="w-16 h-4 bg-gray-200 dark:bg-slate-700 rounded"></div>
+                <div class="w-16 h-4 bg-gray-200 dark:bg-slate-700 rounded"></div>
+                <div class="w-16 h-4 bg-gray-200 dark:bg-slate-700 rounded"></div>
               </div>
             </div>
           </div>
@@ -227,14 +227,14 @@ import { Observable } from 'rxjs';
 
       <!-- Online Learning Status -->
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-        <div class="metric-card-enhanced">
+        <div class="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-white/5 flex flex-col justify-center relative overflow-hidden transition-all duration-300 dark:shadow-[0_4px_6px_-1px_rgba(0,0,0,0.3)]">
           <ng-container *ngIf="onlineLearningStatus$ | async as learningStatus; else learningLoading">
-          <div class="px-6 py-4 border-b border-gray-200">
-            <h3 class="text-lg font-medium text-gray-900">Online Learning Status</h3>
-            <p class="text-sm text-gray-600">Real-time model training and adaptation</p>
+          <div class="px-6 py-4 border-b border-gray-200 dark:border-white/5 bg-gray-50/50 dark:bg-white/[0.02]">
+            <h3 class="text-lg font-medium text-gray-900 dark:text-white">Online Learning Status</h3>
+            <p class="text-sm text-gray-600 dark:text-gray-400">Real-time model training and adaptation</p>
           </div>
           <div class="p-6 space-y-4">
-            <div *ngFor="let status of learningStatus" class="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
+            <div *ngFor="let status of learningStatus" class="flex items-center justify-between p-4 bg-gray-50 dark:bg-slate-800/50 rounded-lg">
               <div class="flex items-center">
                 <div class="flex-shrink-0">
                   <div class="w-8 h-8 rounded-full bg-gradient-to-r from-green-400 to-blue-500 flex items-center justify-center">
@@ -242,41 +242,41 @@ import { Observable } from 'rxjs';
                   </div>
                 </div>
                 <div class="ml-3">
-                  <div class="text-sm font-medium text-gray-900">{{ status.agent_name }}</div>
-                  <div class="text-sm text-gray-500">{{ status.model_type }}</div>
+                  <div class="text-sm font-medium text-gray-900 dark:text-white">{{ status.agent_name }}</div>
+                  <div class="text-sm text-gray-500 dark:text-gray-400">{{ status.model_type }}</div>
                 </div>
               </div>
               <div class="text-right">
-                <div class="text-sm font-medium text-gray-900">{{ (status.model_accuracy * 100) | number:'1.1-1' }}%</div>
-                <div class="text-sm text-gray-500">{{ status.training_samples | number }} samples</div>
+                <div class="text-sm font-medium text-gray-900 dark:text-white">{{ (status.model_accuracy * 100) | number:'1.1-1' }}%</div>
+                <div class="text-sm text-gray-500 dark:text-gray-400">{{ status.training_samples | number }} samples</div>
                 <div class="flex items-center mt-1">
-                  <div class="w-2 h-2 rounded-full mr-2" [class]="status.is_training ? 'bg-green-500 animate-pulse' : 'bg-gray-400'"></div>
-                  <span class="text-xs text-gray-500">{{ status.is_training ? 'Training' : 'Idle' }}</span>
+                  <div class="w-2 h-2 rounded-full mr-2" [class]="status.is_training ? 'bg-green-500 animate-pulse' : 'bg-gray-400 dark:bg-slate-600'"></div>
+                  <span class="text-xs text-gray-500 dark:text-gray-400">{{ status.is_training ? 'Training' : 'Idle' }}</span>
                 </div>
               </div>
             </div>
           </div>
           </ng-container>
-          
+
           <!-- Loading template for online learning -->
           <ng-template #learningLoading>
-            <div class="px-6 py-4 border-b border-gray-200">
-              <h3 class="text-lg font-medium text-gray-900">Online Learning Status</h3>
-              <p class="text-sm text-gray-600">Real-time model training and adaptation</p>
+            <div class="px-6 py-4 border-b border-gray-200 dark:border-white/5 bg-gray-50/50 dark:bg-white/[0.02]">
+              <h3 class="text-lg font-medium text-gray-900 dark:text-white">Online Learning Status</h3>
+              <p class="text-sm text-gray-600 dark:text-gray-400">Real-time model training and adaptation</p>
             </div>
             <div class="p-6 animate-pulse">
               <div class="space-y-4">
-                <div *ngFor="let i of [1,2,3]" class="flex items-center justify-between p-4 bg-gray-100 rounded-lg">
+                <div *ngFor="let i of [1,2,3]" class="flex items-center justify-between p-4 bg-gray-100 dark:bg-slate-800/50 rounded-lg">
                   <div class="flex items-center">
-                    <div class="w-8 h-8 bg-gray-300 rounded-full"></div>
+                    <div class="w-8 h-8 bg-gray-300 dark:bg-slate-700 rounded-full"></div>
                     <div class="ml-3">
-                      <div class="h-4 bg-gray-300 rounded w-24 mb-1"></div>
-                      <div class="h-3 bg-gray-300 rounded w-16"></div>
+                      <div class="h-4 bg-gray-300 dark:bg-slate-700 rounded w-24 mb-1"></div>
+                      <div class="h-3 bg-gray-300 dark:bg-slate-700 rounded w-16"></div>
                     </div>
                   </div>
                   <div class="text-right">
-                    <div class="h-4 bg-gray-300 rounded w-12 mb-1"></div>
-                    <div class="h-3 bg-gray-300 rounded w-16"></div>
+                    <div class="h-4 bg-gray-300 dark:bg-slate-700 rounded w-12 mb-1"></div>
+                    <div class="h-3 bg-gray-300 dark:bg-slate-700 rounded w-16"></div>
                   </div>
                 </div>
               </div>
@@ -284,14 +284,14 @@ import { Observable } from 'rxjs';
           </ng-template>
         </div>
 
-        <div class="metric-card-enhanced">
+        <div class="bg-white dark:bg-slate-800 rounded-xl border border-gray-200 dark:border-white/5 flex flex-col justify-center relative overflow-hidden transition-all duration-300 dark:shadow-[0_4px_6px_-1px_rgba(0,0,0,0.3)]">
           <ng-container *ngIf="agentFeedback$ | async as feedback; else feedbackLoading">
-          <div class="px-6 py-4 border-b border-gray-200">
-            <h3 class="text-lg font-medium text-gray-900">Recent Feedback</h3>
-            <p class="text-sm text-gray-600">Latest prediction feedback and outcomes</p>
+          <div class="px-6 py-4 border-b border-gray-200 dark:border-white/5 bg-gray-50/50 dark:bg-white/[0.02]">
+            <h3 class="text-lg font-medium text-gray-900 dark:text-white">Recent Feedback</h3>
+            <p class="text-sm text-gray-600 dark:text-gray-400">Latest prediction feedback and outcomes</p>
           </div>
           <div class="p-6 space-y-3 max-h-96 overflow-y-auto">
-            <div *ngFor="let item of feedback.slice(0, 10)" class="flex items-center justify-between p-3 bg-gray-50 rounded-lg">
+            <div *ngFor="let item of feedback.slice(0, 10)" class="flex items-center justify-between p-3 bg-gray-50 dark:bg-slate-800/50 rounded-lg">
               <div class="flex items-center">
                 <div class="flex-shrink-0">
                   <div class="w-6 h-6 rounded-full bg-gradient-to-r from-blue-400 to-purple-500 flex items-center justify-center">
@@ -299,39 +299,39 @@ import { Observable } from 'rxjs';
                   </div>
                 </div>
                 <div class="ml-3">
-                  <div class="text-sm font-medium text-gray-900">{{ item.agent_name }}</div>
-                  <div class="text-sm text-gray-500">{{ item.predicted_signal }} → {{ item.actual_outcome }}</div>
+                  <div class="text-sm font-medium text-gray-900 dark:text-white">{{ item.agent_name }}</div>
+                  <div class="text-sm text-gray-500 dark:text-gray-400">{{ item.predicted_signal }} → {{ item.actual_outcome }}</div>
                 </div>
               </div>
               <div class="text-right">
                 <div class="text-sm font-medium" [class]="getFeedbackColor(item.feedback_score)">
                   {{ item.feedback_score > 0 ? '+' : '' }}{{ item.feedback_score | number:'1.2-2' }}
                 </div>
-                <div class="text-sm text-gray-500">{{ item.timestamp | date:'short' }}</div>
+                <div class="text-sm text-gray-500 dark:text-gray-400">{{ item.timestamp | date:'short' }}</div>
               </div>
             </div>
           </div>
           </ng-container>
-          
+
           <!-- Loading template for recent feedback -->
           <ng-template #feedbackLoading>
-            <div class="px-6 py-4 border-b border-gray-200">
-              <h3 class="text-lg font-medium text-gray-900">Recent Feedback</h3>
-              <p class="text-sm text-gray-600">Latest prediction feedback and outcomes</p>
+            <div class="px-6 py-4 border-b border-gray-200 dark:border-white/5 bg-gray-50/50 dark:bg-white/[0.02]">
+              <h3 class="text-lg font-medium text-gray-900 dark:text-white">Recent Feedback</h3>
+              <p class="text-sm text-gray-600 dark:text-gray-400">Latest prediction feedback and outcomes</p>
             </div>
             <div class="p-6 animate-pulse">
               <div class="space-y-3">
-                <div *ngFor="let i of [1,2,3,4,5]" class="flex items-center justify-between p-3 bg-gray-100 rounded-lg">
+                <div *ngFor="let i of [1,2,3,4,5]" class="flex items-center justify-between p-3 bg-gray-100 dark:bg-slate-800/50 rounded-lg">
                   <div class="flex items-center">
-                    <div class="w-6 h-6 bg-gray-300 rounded-full"></div>
+                    <div class="w-6 h-6 bg-gray-300 dark:bg-slate-700 rounded-full"></div>
                     <div class="ml-3">
-                      <div class="h-4 bg-gray-300 rounded w-20 mb-1"></div>
-                      <div class="h-3 bg-gray-300 rounded w-24"></div>
+                      <div class="h-4 bg-gray-300 dark:bg-slate-700 rounded w-20 mb-1"></div>
+                      <div class="h-3 bg-gray-300 dark:bg-slate-700 rounded w-24"></div>
                     </div>
                   </div>
                   <div class="text-right">
-                    <div class="h-4 bg-gray-300 rounded w-12 mb-1"></div>
-                    <div class="h-3 bg-gray-300 rounded w-16"></div>
+                    <div class="h-4 bg-gray-300 dark:bg-slate-700 rounded w-12 mb-1"></div>
+                    <div class="h-3 bg-gray-300 dark:bg-slate-700 rounded w-16"></div>
                   </div>
                 </div>
               </div>
@@ -348,7 +348,7 @@ export class AgentMonitorComponent implements OnInit {
   agentPerformanceMetrics$: Observable<AgentPerformanceMetrics[]> | undefined;
   agentFeedback$: Observable<AgentFeedback[]> | undefined;
   onlineLearningStatus$: Observable<OnlineLearningStatus[]> | undefined;
-  
+
   // Loading states
   isLoadingSummary = true;
   isLoadingMetrics = true;
@@ -411,21 +411,21 @@ export class AgentMonitorComponent implements OnInit {
   getTrendColor(trend: string): string {
     switch (trend.toLowerCase()) {
       case 'improving':
-        return 'bg-green-100 text-green-800';
+        return 'bg-green-100 text-green-800 dark:bg-green-800/30 dark:text-green-300';
       case 'stable':
-        return 'bg-blue-100 text-blue-800';
+        return 'bg-blue-100 text-blue-800 dark:bg-blue-800/30 dark:text-blue-300';
       case 'declining':
-        return 'bg-red-100 text-red-800';
+        return 'bg-red-100 text-red-800 dark:bg-red-800/30 dark:text-red-300';
       default:
         return 'bg-gray-100 text-gray-800';
     }
   }
 
   getFeedbackColor(score: number): string {
-    if (score > 0.5) return 'text-green-600';
-    if (score > 0) return 'text-blue-600';
-    if (score > -0.5) return 'text-yellow-600';
-    return 'text-red-600';
+    if (score > 0.5) return 'text-green-600 dark:text-green-400';
+    if (score > 0) return 'text-blue-600 dark:text-blue-400';
+    if (score > -0.5) return 'text-yellow-600 dark:text-yellow-400';
+    return 'text-red-600 dark:text-red-400';
   }
 
   formatNumber(value: number): string {

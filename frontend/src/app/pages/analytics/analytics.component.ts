@@ -15,8 +15,8 @@ import { environment } from '../../../environments/environment';
     <div class="space-y-6 max-w-7xl mx-auto">
       <!-- Page Header -->
       <div>
-        <h1 class="text-3xl font-bold text-gray-900">Analytics</h1>
-        <p class="text-gray-600">Advanced analytics and insights</p>
+        <h1 class="text-3xl font-bold text-gray-900 dark:text-white">Analytics</h1>
+        <p class="text-gray-600 dark:text-gray-400">Advanced analytics and insights</p>
       </div>
 
       <!-- Analytics Overview Cards -->
@@ -33,8 +33,8 @@ import { environment } from '../../../environments/environment';
                 </div>
               </div>
               <div class="ml-4">
-                <p class="text-sm font-medium text-gray-600">Total Predictions</p>
-                <p class="text-2xl font-bold text-gray-900">{{ analytics.total_predictions | number }}</p>
+                <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Total Predictions</p>
+                <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ analytics.total_predictions | number }}</p>
               </div>
             </div>
             <div class="flex items-center">
@@ -54,8 +54,8 @@ import { environment } from '../../../environments/environment';
                 </div>
               </div>
               <div class="ml-4">
-                <p class="text-sm font-medium text-gray-600">Avg Accuracy</p>
-                <p class="text-2xl font-bold text-gray-900">{{ analytics.accuracy_rate | percent:'1.1-1' }}</p>
+                <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Avg Accuracy</p>
+                <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ analytics.accuracy_rate | percent:'1.1-1' }}</p>
               </div>
             </div>
             <div class="text-right">
@@ -78,8 +78,8 @@ import { environment } from '../../../environments/environment';
                 </div>
               </div>
               <div class="ml-4">
-                <p class="text-sm font-medium text-gray-600">Response Time</p>
-                <p class="text-2xl font-bold text-gray-900">{{ analytics.system_analytics.avg_response_time }}ms</p>
+                <p class="text-sm font-medium text-gray-600 dark:text-gray-400">Response Time</p>
+                <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ analytics.system_analytics.avg_response_time }}ms</p>
               </div>
             </div>
             <div class="text-right">
@@ -100,8 +100,8 @@ import { environment } from '../../../environments/environment';
                 </div>
               </div>
               <div class="ml-4">
-                <p class="text-sm font-medium text-gray-600">System Reliability</p>
-                <p class="text-2xl font-bold text-gray-900">{{ (analytics.system_analytics.system_reliability * 100) | number:'1.1-1' }}%</p>
+                <p class="text-sm font-medium text-gray-600 dark:text-gray-400">System Reliability</p>
+                <p class="text-2xl font-bold text-gray-900 dark:text-white">{{ (analytics.system_analytics.system_reliability * 100) | number:'1.1-1' }}%</p>
               </div>
             </div>
             <div class="text-right">
@@ -124,8 +124,8 @@ import { environment } from '../../../environments/environment';
           <div class="card-header-enhanced">
             <div class="flex items-center justify-between">
               <div>
-                <h3 class="text-xl font-bold text-gray-900">Performance Metrics</h3>
-                <p class="text-sm text-gray-600 mt-1">Key performance indicators</p>
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white">Performance Metrics</h3>
+                <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Key performance indicators</p>
               </div>
               <div class="flex items-center space-x-2">
                 <div class="w-2 h-2 bg-green-500 rounded-full animate-pulse"></div>
@@ -136,19 +136,19 @@ import { environment } from '../../../environments/environment';
           <div class="p-6">
             <div class="space-y-4">
               <div class="flex justify-between items-center">
-                <span class="text-sm text-gray-600">Model Accuracy</span>
+                <span class="text-sm text-gray-600 dark:text-gray-400">Model Accuracy</span>
                 <span class="font-semibold text-green-600">87.3%</span>
               </div>
               <div class="flex justify-between items-center">
-                <span class="text-sm text-gray-600">Prediction Speed</span>
+                <span class="text-sm text-gray-600 dark:text-gray-400">Prediction Speed</span>
                 <span class="font-semibold text-blue-600">1.2s avg</span>
               </div>
               <div class="flex justify-between items-center">
-                <span class="text-sm text-gray-600">Data Coverage</span>
+                <span class="text-sm text-gray-600 dark:text-gray-400">Data Coverage</span>
                 <span class="font-semibold text-purple-600">94.7%</span>
               </div>
               <div class="flex justify-between items-center">
-                <span class="text-sm text-gray-600">Uptime</span>
+                <span class="text-sm text-gray-600 dark:text-gray-400">Uptime</span>
                 <span class="font-semibold text-green-600">99.9%</span>
               </div>
             </div>
@@ -160,19 +160,19 @@ import { environment } from '../../../environments/environment';
           <div class="card-header-enhanced">
             <div class="flex items-center justify-between">
               <div>
-                <h3 class="text-xl font-bold text-gray-900">Data Sources</h3>
-                <p class="text-sm text-gray-600 mt-1">Connected data feeds</p>
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white">Data Sources</h3>
+                <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Connected data feeds</p>
               </div>
               <div class="flex items-center space-x-2">
                 <div class="w-2 h-2 bg-blue-500 rounded-full animate-pulse"></div>
-                <span class="text-sm font-medium text-gray-600">{{ dataSources.length }} Active</span>
+                <span class="text-sm font-medium text-gray-600 dark:text-gray-400">{{ dataSources.length }} Active</span>
               </div>
             </div>
           </div>
           <div class="p-6">
             <div *ngIf="loadingDataSources" class="flex justify-center items-center py-8">
               <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-              <span class="ml-2 text-gray-600">Loading data sources...</span>
+              <span class="ml-2 text-gray-600 dark:text-gray-400">Loading data sources...</span>
             </div>
             <div *ngIf="!loadingDataSources" class="space-y-4 max-h-96 overflow-y-auto">
               <div *ngFor="let source of dataSources" class="flex justify-between items-center">
@@ -181,15 +181,15 @@ import { environment } from '../../../environments/environment';
                     <span class="text-white text-xs font-bold">{{ getSourceIcon(source.name) }}</span>
                   </div>
                   <div>
-                    <span class="font-semibold text-gray-900">{{ source.name }}</span>
-                    <p class="text-xs text-gray-500">{{ source.type }}</p>
+                    <span class="font-semibold text-gray-900 dark:text-white">{{ source.name }}</span>
+                    <p class="text-xs text-gray-500 dark:text-gray-400">{{ source.type }}</p>
                   </div>
                 </div>
                 <div class="text-right">
                   <span class="text-sm font-semibold" [class]="source.status === 'active' ? 'text-green-600' : 'text-red-600'">
                     {{ source.status | titlecase }}
                   </span>
-                  <p class="text-xs text-gray-500">{{ source.last_update | date:'short' }}</p>
+                  <p class="text-xs text-gray-500 dark:text-gray-400">{{ source.last_update | date:'short' }}</p>
                 </div>
               </div>
             </div>
@@ -201,52 +201,52 @@ import { environment } from '../../../environments/environment';
           <div class="card-header-enhanced">
             <div class="flex items-center justify-between">
               <div>
-                <h3 class="text-xl font-bold text-gray-900">Data Quality</h3>
-                <p class="text-sm text-gray-600 mt-1">Quality metrics and validation</p>
+                <h3 class="text-xl font-bold text-gray-900 dark:text-white">Data Quality</h3>
+                <p class="text-sm text-gray-600 dark:text-gray-400 mt-1">Quality metrics and validation</p>
               </div>
               <div class="flex items-center space-x-2">
                 <div class="w-2 h-2 rounded-full animate-pulse" [class]="getQualityStatusColor(dataQuality?.quality_level)"></div>
-                <span class="text-sm font-medium text-gray-600">{{ dataQuality?.quality_level | titlecase }}</span>
+                <span class="text-sm font-medium text-gray-600 dark:text-gray-400">{{ dataQuality?.quality_level | titlecase }}</span>
               </div>
             </div>
           </div>
           <div class="p-6">
             <div *ngIf="loadingDataQuality" class="flex justify-center items-center py-8">
               <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-              <span class="ml-2 text-gray-600">Loading data quality...</span>
+              <span class="ml-2 text-gray-600 dark:text-gray-400">Loading data quality...</span>
             </div>
             <div *ngIf="!loadingDataQuality && dataQuality" class="space-y-4">
               <div class="grid grid-cols-2 gap-4">
                 <div class="text-center">
                   <p class="text-2xl font-bold text-blue-600">{{ (dataQuality.overall_score * 100) | number:'1.1-1' }}%</p>
-                  <p class="text-sm text-gray-600">Overall Score</p>
+                  <p class="text-sm text-gray-600 dark:text-gray-400">Overall Score</p>
                 </div>
                 <div class="text-center">
                   <p class="text-2xl font-bold text-green-600">{{ (dataQuality.completeness * 100) | number:'1.1-1' }}%</p>
-                  <p class="text-sm text-gray-600">Completeness</p>
+                  <p class="text-sm text-gray-600 dark:text-gray-400">Completeness</p>
                 </div>
               </div>
               <div class="grid grid-cols-2 gap-4">
                 <div class="text-center">
                   <p class="text-2xl font-bold text-purple-600">{{ (dataQuality.accuracy * 100) | number:'1.1-1' }}%</p>
-                  <p class="text-sm text-gray-600">Accuracy</p>
+                  <p class="text-sm text-gray-600 dark:text-gray-400">Accuracy</p>
                 </div>
                 <div class="text-center">
                   <p class="text-2xl font-bold text-amber-600">{{ (dataQuality.consistency * 100) | number:'1.1-1' }}%</p>
-                  <p class="text-sm text-gray-600">Consistency</p>
+                  <p class="text-sm text-gray-600 dark:text-gray-400">Consistency</p>
                 </div>
               </div>
               <div class="pt-4 border-t border-gray-200">
                 <div class="flex justify-between items-center mb-2">
-                  <span class="text-sm text-gray-600">Anomalies Detected</span>
+                  <span class="text-sm text-gray-600 dark:text-gray-400">Anomalies Detected</span>
                   <span class="text-sm font-semibold text-orange-600">{{ dataQuality.anomalies_detected }}</span>
                 </div>
                 <div class="flex justify-between items-center mb-2">
-                  <span class="text-sm text-gray-600">Missing Data Points</span>
+                  <span class="text-sm text-gray-600 dark:text-gray-400">Missing Data Points</span>
                   <span class="text-sm font-semibold text-red-600">{{ dataQuality.missing_data_points }}</span>
                 </div>
                 <div class="flex justify-between items-center">
-                  <span class="text-sm text-gray-600">Data Gaps</span>
+                  <span class="text-sm text-gray-600 dark:text-gray-400">Data Gaps</span>
                   <span class="text-sm font-semibold text-yellow-600">{{ dataQuality.data_gaps }}</span>
                 </div>
               </div>
@@ -305,7 +305,7 @@ export class AnalyticsComponent implements OnInit {
       case 'bearish':
         return 'text-red-600';
       default:
-        return 'text-gray-600';
+        return 'text-gray-600 dark:text-gray-400';
     }
   }
 

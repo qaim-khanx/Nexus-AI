@@ -1,0 +1,248 @@
+﻿
+> ai-market-analysis-frontend@1.0.0 build
+> ng build
+
+node.exe : 
+[baseline-browser-mapping] 
+The data in this module is 
+over two months old.  To 
+ensure accurate Baseline 
+data, please update: `npm 
+i baseline-browser-mapping@
+latest -D`
+At line:1 char:1
++ & "C:\Program 
+Files\nodejs/node.exe" 
+"C:\Program 
+Files\nodejs/node_mo ...
++ ~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~~~~~~~
+    + CategoryInfo         
+     : NotSpecified: ([ba  
+  seline-brows...ping@la   
+ test -D`:String) [], R    
+emoteException
+    + FullyQualifiedErrorI 
+   d : NativeCommandError
+ 
+- Generating browser 
+application bundles 
+(phase: setup)...
+Γ£ö Browser application 
+bundle generation complete.
+Γ£ö Browser application 
+bundle generation complete.
+
+Error: src/app/pages/agent-
+router/agent-router.compone
+nt.html:204:39 - error 
+TS2339: Property 
+'decisions' does not exist 
+on type 
+'AgentRouterComponent'.
+
+204           <tr 
+*ngFor="let decision of 
+decisions.slice(0, 10)" 
+class="hover:bg-gray-50 dar
+k:hover:bg-white/[0.02]">
+                           
+               ~~~~~~~~~
+
+  src/app/pages/agent-route
+r/agent-router.component.ts
+:10:16
+    10   templateUrl: './ag
+ent-router.component.html',
+                      ~~~~~
+~~~~~~~~~~~~~~~~~~~~~~~~~~
+    Error occurs in the 
+template of component 
+AgentRouterComponent.
+
+
+Error: src/app/pages/agent-
+router/agent-router.compone
+nt.ts:24:51 - error 
+TS2339: Property 
+'getAgentWeights' does not 
+exist on type 
+'SystemStatusService'.
+
+24     this.agentWeights$ 
+= this.systemStatusService.
+getAgentWeights();
+                           
+                          
+~~~~~~~~~~~~~~~
+
+
+Error: src/app/pages/agent-
+router/agent-router.compone
+nt.ts:25:55 - error 
+TS2551: Property 
+'getRoutingDecisions' does 
+not exist on type 
+'SystemStatusService'. Did 
+you mean 
+'getRotationDecisions'?
+
+25     
+this.routingDecisions$ = th
+is.systemStatusService.getR
+outingDecisions();
+                           
+                           
+   ~~~~~~~~~~~~~~~~~~~
+
+  src/app/services/system-s
+tatus.service.ts:1361:3
+    1361   getRotationDecis
+ions(limit: number = 10): O
+bservable<RotationDecision[
+]> {
+           
+~~~~~~~~~~~~~~~~~~~~
+    'getRotationDecisions' 
+is declared here.
+
+
+Error: src/app/pages/execut
+ion-agent/execution-agent.c
+omponent.ts:19:60 - error 
+TS2339: Property 
+'getExecutionAgentSummary' 
+does not exist on type 
+'SystemStatusService'.
+
+19     this.executionAgentS
+ummary$ = this.systemStatus
+Service.getExecutionAgentSu
+mmary();
+                           
+                           
+        
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+Error: src/app/pages/latent
+-pattern-detector/latent-pa
+ttern-detector.component.ts
+:49:57 - error TS2339: 
+Property 
+'getCompressionMetrics' 
+does not exist on type 
+'SystemStatusService'.
+
+49     
+this.compressionMetrics$ = 
+this.systemStatusService.ge
+tCompressionMetrics();
+                           
+                           
+     ~~~~~~~~~~~~~~~~~~~~~
+
+
+Error: src/app/pages/latent
+-pattern-detector/latent-pa
+ttern-detector.component.ts
+:50:5 - error TS2532: 
+Object is possibly 
+'undefined'.
+
+50     this.compressionMetr
+ics$.subscribe({
+       
+~~~~~~~~~~~~~~~~~~~~~~~~
+
+
+Error: src/app/pages/meta-e
+valuation-agent/meta-evalua
+tion-agent.component.ts:56:
+53 - error TS2551: 
+Property 
+'getRegimeAnalysis' does 
+not exist on type 
+'SystemStatusService'. Did 
+you mean 'getRAGAnalysis'?
+
+56     
+this.regimeAnalysis$ = this
+.systemStatusService.getReg
+imeAnalysis();
+                           
+                           
+ ~~~~~~~~~~~~~~~~~
+
+  src/app/services/system-s
+tatus.service.ts:1549:3
+    1549   
+getRAGAnalysis(): 
+Observable<RAGAnalysis> {
+           ~~~~~~~~~~~~~~
+    'getRAGAnalysis' is 
+declared here.
+
+
+Error: src/app/pages/meta-e
+valuation-agent/meta-evalua
+tion-agent.component.ts:57:
+5 - error TS2532: Object 
+is possibly 'undefined'.
+
+57     this.regimeAnalysis$
+.subscribe({
+       ~~~~~~~~~~~~~~~~~~~~
+
+
+Error: src/app/services/sys
+tem-status.service.ts:1712:
+7 - error TS2322: Type 
+'Observable<({ id: string; 
+level: "high"; message: 
+string; timestamp: string; 
+} | { id: string; level: 
+"medium"; message: string; 
+timestamp: string; } | { 
+id: string; level: "low"; 
+message: string; 
+timestamp: string; })[]>' 
+is not assignable to type 
+'Observable<RiskAlert[]>'.
+  Type '({ id: string; 
+level: "high"; message: 
+string; timestamp: string; 
+} | { id: string; level: 
+"medium"; message: string; 
+timestamp: string; } | { 
+id: string; level: "low"; 
+message: string; 
+timestamp: string; })[]' 
+is not assignable to type 
+'RiskAlert[]'.
+    Type '{ id: string; 
+level: "high"; message: 
+string; timestamp: string; 
+} | { id: string; level: 
+"medium"; message: string; 
+timestamp: string; } | { 
+id: string; level: "low"; 
+message: string; 
+timestamp: string; }' is 
+not assignable to type 
+'RiskAlert'.
+      Type '{ id: string; 
+level: "high"; message: 
+string; timestamp: string; 
+}' is missing the 
+following properties from 
+type 'RiskAlert': 
+alert_id, severity, 
+resolved, type
+
+1712       return of([
+           ~~~~~~
+
+
+

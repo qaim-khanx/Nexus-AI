@@ -15,9 +15,21 @@ services:
       - POSTGRES_PASSWORD=password
     ports:
       - "8001:8001"
-    depends_on:
-      ai_market_postgres:
-        condition: service_healthy
+    # depends_on:
+    #   ai_market_postgres:
+    #     condition: service_healthy
+    networks:
+      - market-ai-network
+
+  # Angular Frontend
+  frontend:
+    build:
+      context: ./frontend
+      dockerfile: Dockerfile
+    container_name: market-ai-frontend
+    restart: unless-stopped
+    ports:
+      - "4200:80"
     networks:
       - market-ai-network
 

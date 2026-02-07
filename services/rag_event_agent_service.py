@@ -12,37 +12,32 @@ from datetime import datetime, timedelta
 from typing import Dict, List, Optional, Any
 import logging
 import numpy as np
-from sentence_transformers import SentenceTransformer
+# from sentence_transformers import SentenceTransformer
 
 logger = logging.getLogger(__name__)
 
 class RAGEventAgentService:
     """Service for managing RAG Event Agent data and analysis with Ollama LLM."""
-    
+
     def __init__(self, db_pool: asyncpg.Pool):
         self.db_pool = db_pool
         # Use host.docker.internal for Docker containers to access host services
         self.ollama_url = "http://host.docker.internal:11434"  # Docker host access
         self.embedding_model = None
         self._initialize_database()
-    
+
     def _initialize_database(self):
         """Initialize RAG Event Agent database tables."""
         # Tables are created by init.sql, this is for any additional setup
         pass
-    
+
     async def _get_embedding_model(self):
         """Initialize the sentence transformer model for embeddings."""
-        if self.embedding_model is None:
-            try:
-                # Use a lightweight model that works well for financial text
-                self.embedding_model = SentenceTransformer('all-MiniLM-L6-v2')
-                logger.info("Sentence transformer model loaded successfully")
-            except Exception as e:
-                logger.error(f"Error loading embedding model: {e}")
-                self.embedding_model = None
-        return self.embedding_model
-    
+        # LITE MODE: Disabled heavy model loading
+        self.embedding_model = None
+        logger.info("Lite Mode: Sentence transformer disabled (using fallback embeddings)")
+        return None
+
     async def _get_embeddings(self, texts: List[str]) -> List[List[float]]:
         """Generate embeddings for a list of texts."""
         try:
@@ -50,19 +45,19 @@ class RAGEventAgentService:
             if model is None:
                 # Fallback: return random embeddings
                 return [np.random.rand(384).tolist() for _ in texts]
-            
+
             embeddings = model.encode(texts)
             return embeddings.tolist()
         except Exception as e:
             logger.error(f"Error generating embeddings: {e}")
             # Fallback: return random embeddings
             return [np.random.rand(384).tolist() for _ in texts]
-    
+
     async def _query_ollama(self, prompt: str, model: str = "llama3.1:8b", max_retries: int = 3) -> str:
         """Query Ollama LLM with a prompt and retry logic."""
         # Try different models in order of preference (faster to slower)
         models_to_try = [model, "llama3.1:8b", "llama3:8b", "llama3:latest"]
-        
+
         for model_to_use in models_to_try:
             logger.info(f"Trying model: {model_to_use}")
             for attempt in range(max_retries):
@@ -80,10 +75,10 @@ class RAGEventAgentService:
                                 "stop": ["\n\n\n"]  # Stop generation at multiple newlines
                             }
                         }
-                        
+
                         # Increase timeout to 60 seconds for complex sector analyses
                         timeout = aiohttp.ClientTimeout(total=60)
-                        
+
                         async with session.post(
                             f"{self.ollama_url}/api/generate",
                             json=payload,
@@ -101,49 +96,49 @@ class RAGEventAgentService:
                             else:
                                 logger.error(f"Ollama API error: {response.status}")
                                 break  # Try next model
-                                
+
                 except asyncio.TimeoutError:
                     logger.error(f"Ollama request timeout with model {model_to_use}")
                     break  # Try next model
                 except Exception as e:
                     logger.error(f"Error querying Ollama with model {model_to_use}: {e}")
                     break  # Try next model
-        
+
         return "Error: LLM request failed with all available models"
-    
+
     async def get_rag_event_agent_summary(self) -> Dict[str, Any]:
         """Get comprehensive RAG Event Agent summary with real data."""
         try:
             async with self.db_pool.acquire() as conn:
                 # Get document statistics
                 doc_stats = await conn.fetchrow("""
-                    SELECT 
+                    SELECT
                         COUNT(*) as total_documents,
                         COUNT(DISTINCT source) as active_sources,
                         MAX(published_at) as latest_news
                     FROM rag_news_documents
                     WHERE published_at >= NOW() - INTERVAL '7 days'
                 """)
-                
+
                 # Get analysis statistics
                 analysis_stats = await conn.fetchrow("""
-                    SELECT 
+                    SELECT
                         COUNT(*) as total_queries,
                         COALESCE(AVG(response_time_ms), 0) as avg_response_time,
                         COALESCE(AVG(confidence), 0) as avg_confidence
                     FROM rag_analysis
                     WHERE created_at >= NOW() - INTERVAL '24 hours'
                 """)
-                
+
                 # Get performance metrics
                 performance_stats = await conn.fetchrow("""
-                    SELECT 
+                    SELECT
                         COALESCE(AVG(metric_value), 0) as rag_accuracy
                     FROM rag_performance
                     WHERE metric_name = 'rag_accuracy'
                     AND measurement_date >= NOW() - INTERVAL '24 hours'
                 """)
-                
+
                 return {
                     "total_documents": doc_stats['total_documents'] or 0,
                     "vector_db_size": doc_stats['total_documents'] or 0,
@@ -156,18 +151,18 @@ class RAGEventAgentService:
                     "avg_confidence": float(analysis_stats['avg_confidence'] or 0.0),
                     "last_updated": datetime.now().isoformat()
                 }
-                
+
         except Exception as e:
             logger.error(f"Error getting RAG Event Agent summary: {e}")
             # Return fallback data
             return self._get_fallback_summary()
-    
+
     async def get_rag_documents(self, limit: int = 20) -> List[Dict[str, Any]]:
         """Get recent news documents with real data."""
         try:
             async with self.db_pool.acquire() as conn:
                 rows = await conn.fetch("""
-                    SELECT 
+                    SELECT
                         doc_id,
                         title,
                         content,
@@ -182,7 +177,7 @@ class RAGEventAgentService:
                     ORDER BY published_at DESC
                     LIMIT $1
                 """, limit)
-                
+
                 documents = []
                 for row in rows:
                     documents.append({
@@ -197,18 +192,18 @@ class RAGEventAgentService:
                         "timestamp": row['published_at'].isoformat(),
                         "ingested_at": row['ingested_at'].isoformat()
                     })
-                
+
                 return documents
-                
+
         except Exception as e:
             logger.error(f"Error getting RAG documents: {e}")
             return []
-    
+
     async def get_rag_analysis(self, query: str = None, sector: str = None) -> Dict[str, Any]:
         """Get RAG analysis with real Ollama LLM for a specific sector or general market."""
         try:
             start_time = datetime.now()
-            
+
             # Use provided query or create a default one based on sector
             if not query:
                 if sector == 'technology':
@@ -221,22 +216,22 @@ class RAGEventAgentService:
                     query = "What are the latest trends in retail, e-commerce, and consumer spending that could impact retail stocks?"
                 else:
                     query = "What are the current market trends and their potential impact on stocks across all sectors?"
-            
+
             async with self.db_pool.acquire() as conn:
                 # Get relevant documents using vector similarity search with sector filtering
                 relevant_docs = await self._retrieve_relevant_documents(conn, query, sector=sector)
-                
+
                 # Generate LLM response using Ollama with sector context
                 llm_response = await self._generate_sector_analysis_with_ollama(query, relevant_docs, sector)
-                
+
                 # Calculate confidence based on document relevance and response quality
                 confidence = await self._calculate_confidence(relevant_docs, llm_response)
-                
+
                 response_time = (datetime.now() - start_time).total_seconds() * 1000
-                
+
                 # Save the analysis to database with sector information
                 analysis_id = await self._save_analysis(conn, query, llm_response, confidence, relevant_docs, response_time, sector)
-                
+
                 return {
                     "query": query,
                     "sector": sector or "general",
@@ -248,11 +243,11 @@ class RAGEventAgentService:
                     "response_time_ms": int(response_time),
                     "created_at": datetime.now().isoformat()
                 }
-                
+
         except Exception as e:
             logger.error(f"Error getting RAG analysis: {e}")
             return self._get_fallback_analysis()
-    
+
     async def get_sector_analysis(self, sector: str) -> Dict[str, Any]:
         """Get sector-specific RAG analysis."""
         try:
@@ -262,37 +257,37 @@ class RAGEventAgentService:
                 'healthcare': "Analyze current trends in healthcare sector including pharmaceuticals, biotech, medical devices, and healthcare services. What are the key opportunities and risks?",
                 'retail': "Analyze current trends in retail sector including e-commerce, consumer spending, supply chain, and retail innovation. What are the key opportunities and risks?"
             }
-            
+
             query = sector_queries.get(sector.lower(), sector_queries['technology'])
             return await self.get_rag_analysis(query, sector)
-            
+
         except Exception as e:
             logger.error(f"Error getting sector analysis for {sector}: {e}")
             return self._get_fallback_analysis()
-    
+
     async def get_multi_sector_analysis(self) -> Dict[str, Any]:
         """Get analysis for all major sectors."""
         try:
             sectors = ['technology', 'finance', 'healthcare', 'retail']
             sector_analyses = {}
-            
+
             for sector in sectors:
                 try:
                     sector_analyses[sector] = await self.get_sector_analysis(sector)
                 except Exception as e:
                     logger.error(f"Error analyzing {sector} sector: {e}")
                     sector_analyses[sector] = self._get_fallback_analysis()
-            
+
             return {
                 "sector_analyses": sector_analyses,
                 "generated_at": datetime.now().isoformat(),
                 "total_sectors": len(sectors)
             }
-            
+
         except Exception as e:
             logger.error(f"Error getting multi-sector analysis: {e}")
             return {"sector_analyses": {}, "error": str(e)}
-    
+
     async def _retrieve_relevant_documents(self, conn, query: str, limit: int = 10, sector: str = None) -> List[Dict[str, Any]]:
         """Retrieve relevant documents using vector similarity with optional sector filtering."""
         try:
@@ -305,7 +300,7 @@ class RAGEventAgentService:
                     'retail': ['retail', 'earnings']
                 }
                 categories = sector_categories.get(sector.lower(), [])
-                
+
                 if categories:
                     placeholders = ','.join([f"${i+1}" for i in range(len(categories))])
                     sql_query = f"""
@@ -330,24 +325,24 @@ class RAGEventAgentService:
                     ORDER BY published_at DESC
                     LIMIT 50
                 """)
-            
+
             if not doc_rows:
                 return []
-            
+
             # Generate embeddings for query and documents
             query_embedding = await self._get_embeddings([query])
             doc_texts = [f"{row['title']} {row['content'][:500]}" for row in doc_rows]
             doc_embeddings = await self._get_embeddings(doc_texts)
-            
+
             # Calculate similarities (cosine similarity)
             similarities = []
             for i, doc_row in enumerate(doc_rows):
                 similarity = self._cosine_similarity(query_embedding[0], doc_embeddings[i])
                 similarities.append((similarity, doc_row))
-            
+
             # Sort by similarity and return top documents
             similarities.sort(key=lambda x: x[0], reverse=True)
-            
+
             relevant_docs = []
             for similarity, doc_row in similarities[:limit]:
                 if similarity > 0.3:  # Minimum similarity threshold
@@ -361,30 +356,30 @@ class RAGEventAgentService:
                         "tags": doc_row['tags'] or [],
                         "similarity": similarity
                     })
-            
+
             return relevant_docs
-            
+
         except Exception as e:
             logger.error(f"Error retrieving relevant documents: {e}")
             return []
-    
+
     def _cosine_similarity(self, vec1: List[float], vec2: List[float]) -> float:
         """Calculate cosine similarity between two vectors."""
         try:
             vec1 = np.array(vec1)
             vec2 = np.array(vec2)
-            
+
             dot_product = np.dot(vec1, vec2)
             norm1 = np.linalg.norm(vec1)
             norm2 = np.linalg.norm(vec2)
-            
+
             if norm1 == 0 or norm2 == 0:
                 return 0.0
-            
+
             return dot_product / (norm1 * norm2)
         except Exception:
             return 0.0
-    
+
     async def _generate_sector_analysis_with_ollama(self, query: str, relevant_docs: List[Dict[str, Any]], sector: str = None) -> str:
         """Generate sector-specific analysis using Ollama LLM."""
         try:
@@ -392,7 +387,7 @@ class RAGEventAgentService:
             context = ""
             for i, doc in enumerate(relevant_docs[:3], 1):
                 context += f"{i}. {doc['title']}\n   Source: {doc['source']}\n   Content: {doc['content'][:300]}...\n\n"
-            
+
             # Create sector-specific prompts (optimized for faster responses)
             sector_prompts = {
                 'technology': """Tech analyst: Provide concise insights on AI, semiconductors, and software trends.""",
@@ -400,9 +395,9 @@ class RAGEventAgentService:
                 'healthcare': """Healthcare analyst: Provide concise insights on pharma, biotech, and medical devices.""",
                 'retail': """Retail analyst: Provide concise insights on e-commerce and consumer spending."""
             }
-            
+
             base_prompt = sector_prompts.get(sector, "Market analyst: Provide concise insights.")
-            
+
             prompt = f"""{base_prompt}
 
 Query: {query}
@@ -418,60 +413,60 @@ Provide a brief analysis with:
 Keep response under 300 words, focus on actionable insights."""
 
             response = await self._query_ollama(prompt)
-            
+
             # Clean up the response
             if response.startswith("Error:"):
                 return f"LLM analysis unavailable: {response}"
-            
+
             return response.strip()
-            
+
         except Exception as e:
             logger.error(f"Error generating sector analysis with Ollama: {e}")
             return f"Error generating analysis: {str(e)}"
-    
+
     async def _generate_analysis_with_ollama(self, query: str, relevant_docs: List[Dict[str, Any]]) -> str:
         """Generate general analysis using Ollama LLM (backward compatibility)."""
         return await self._generate_sector_analysis_with_ollama(query, relevant_docs, None)
-    
+
     async def _calculate_confidence(self, relevant_docs: List[Dict[str, Any]], llm_response: str) -> float:
         """Calculate confidence score based on document relevance and response quality."""
         try:
             base_confidence = 0.5
-            
+
             # Adjust based on number of relevant documents
             if len(relevant_docs) >= 3:
                 base_confidence += 0.2
             elif len(relevant_docs) >= 1:
                 base_confidence += 0.1
-            
+
             # Adjust based on average document similarity
             if relevant_docs:
                 avg_similarity = sum(doc.get('similarity', 0) for doc in relevant_docs) / len(relevant_docs)
                 base_confidence += min(avg_similarity * 0.3, 0.3)
-            
+
             # Adjust based on response quality (length and content)
             if len(llm_response) > 100 and not llm_response.startswith("Error"):
                 base_confidence += 0.1
-            
+
             return min(base_confidence, 0.95)  # Cap at 95%
-            
+
         except Exception:
             return 0.5
-    
-    async def _save_analysis(self, conn, query: str, llm_response: str, confidence: float, 
+
+    async def _save_analysis(self, conn, query: str, llm_response: str, confidence: float,
                            relevant_docs: List[Dict[str, Any]], response_time: float, sector: str = None) -> str:
         """Save comprehensive analysis to database with all relevant data."""
         try:
             doc_ids = [doc['doc_id'] for doc in relevant_docs]
-            
+
             # Extract source information
             sources = list(set([doc['source'] for doc in relevant_docs]))
             source_count = len(sources)
-            
+
             # Calculate performance metrics
             avg_similarity = sum(doc.get('similarity', 0) for doc in relevant_docs) / len(relevant_docs) if relevant_docs else 0
             doc_count = len(relevant_docs)
-            
+
             # Create comprehensive metadata
             metadata = {
                 "sources": sources,
@@ -494,32 +489,32 @@ Keep response under 300 words, focus on actionable insights."""
                     } for doc in relevant_docs
                 ]
             }
-            
+
             # Insert analysis and get the generated ID
             analysis_type = f"{sector}_impact" if sector else "market_impact"
             result = await conn.fetchrow("""
-                INSERT INTO rag_analysis 
-                (query, llm_response, confidence, reasoning, analysis_type, 
+                INSERT INTO rag_analysis
+                (query, llm_response, confidence, reasoning, analysis_type,
                  relevant_doc_ids, response_time_ms, created_at)
                 VALUES ($1, $2, $3, $4, $5, $6, $7, $8)
                 RETURNING id
-            """, query, llm_response, confidence, 
+            """, query, llm_response, confidence,
                  f"Analysis based on {doc_count} documents from {source_count} sources using Ollama LLM",
                  analysis_type, doc_ids, int(response_time), datetime.now())
-            
+
             analysis_id = f"analysis_{result['id']}_{datetime.now().strftime('%Y%m%d_%H%M%S')}"
-            
+
             # Store detailed performance metrics
             await self._store_analysis_performance_metrics(conn, analysis_id, confidence, response_time, metadata)
-            
+
             logger.info(f"Saved comprehensive RAG analysis {analysis_id} with {doc_count} docs from {source_count} sources")
             return analysis_id
-            
+
         except Exception as e:
             logger.error(f"Error saving analysis: {e}")
             return "unknown"
-    
-    async def _store_analysis_performance_metrics(self, conn, analysis_id: str, confidence: float, 
+
+    async def _store_analysis_performance_metrics(self, conn, analysis_id: str, confidence: float,
                                                 response_time: float, metadata: Dict[str, Any]):
         """Store detailed performance metrics for the analysis."""
         try:
@@ -532,24 +527,24 @@ Keep response under 300 words, focus on actionable insights."""
                 ('avg_similarity_score', metadata['avg_similarity'], 'score', f'Average document similarity for analysis {analysis_id}'),
                 ('llm_response_length', metadata['response_length'], 'characters', f'Length of LLM response for analysis {analysis_id}')
             ]
-            
+
             for metric_name, metric_value, metric_unit, notes in metrics:
                 await conn.execute("""
-                    INSERT INTO rag_performance 
+                    INSERT INTO rag_performance
                     (metric_name, metric_value, metric_unit, measurement_date, notes)
                     VALUES ($1, $2, $3, $4, $5)
                 """, metric_name, metric_value, metric_unit, datetime.now(), notes)
-                
+
         except Exception as e:
             logger.error(f"Error storing analysis performance metrics: {e}")
-    
+
     async def get_rag_performance(self) -> Dict[str, Any]:
         """Get RAG system performance metrics with real data."""
         try:
             async with self.db_pool.acquire() as conn:
                 # Get performance metrics
                 rows = await conn.fetch("""
-                    SELECT 
+                    SELECT
                         metric_name,
                         metric_value,
                         metric_unit,
@@ -558,7 +553,7 @@ Keep response under 300 words, focus on actionable insights."""
                     WHERE measurement_date >= NOW() - INTERVAL '24 hours'
                     ORDER BY measurement_date DESC
                 """)
-                
+
                 performance_metrics = {}
                 for row in rows:
                     performance_metrics[row['metric_name']] = {
@@ -566,29 +561,29 @@ Keep response under 300 words, focus on actionable insights."""
                         "unit": row['metric_unit'],
                         "timestamp": row['measurement_date'].isoformat()
                     }
-                
+
                 return {
                     "metrics": performance_metrics,
                     "last_updated": datetime.now().isoformat()
                 }
-                
+
         except Exception as e:
             logger.error(f"Error getting RAG performance: {e}")
             return {"metrics": {}, "last_updated": datetime.now().isoformat()}
-    
+
     async def fetch_real_news_articles(self) -> List[Dict[str, Any]]:
         """Fetch real news articles from external sources."""
         try:
             articles = []
-            
+
             # Fetch from Yahoo Finance RSS feeds
             yahoo_articles = await self._fetch_from_yahoo_finance()
             articles.extend(yahoo_articles)
-            
+
             # Fetch from financial RSS feeds
             rss_articles = await self._fetch_from_rss_feeds()
             articles.extend(rss_articles)
-            
+
             # Remove duplicates and filter recent articles
             unique_articles = self._deduplicate_articles(articles)
             recent_articles = []
@@ -603,19 +598,19 @@ Keep response under 300 words, focus on actionable insights."""
                 except:
                     # If there's any date parsing issue, include the article
                     recent_articles.append(a)
-            
+
             logger.info(f"Fetched {len(recent_articles)} real news articles from {len(articles)} total articles")
             return recent_articles[:100]  # Increased limit to 100 most recent articles for better RAG accuracy
-            
+
         except Exception as e:
             logger.error(f"Error fetching real news articles: {e}")
             return []
-    
+
     async def _fetch_from_yahoo_finance(self) -> List[Dict[str, Any]]:
         """Fetch news from Yahoo Finance."""
         try:
             articles = []
-            
+
             # Yahoo Finance RSS feeds for financial news (expanded)
             rss_feeds = [
                 'https://feeds.finance.yahoo.com/rss/2.0/headline',
@@ -624,7 +619,7 @@ Keep response under 300 words, focus on actionable insights."""
                 'https://feeds.finance.yahoo.com/rss/2.0/marketnews',
                 'https://feeds.finance.yahoo.com/rss/2.0/industry'
             ]
-            
+
             for feed_url in rss_feeds:
                 try:
                     async with aiohttp.ClientSession() as session:
@@ -635,64 +630,64 @@ Keep response under 300 words, focus on actionable insights."""
                 except Exception as e:
                     logger.warning(f"Failed to fetch from {feed_url}: {e}")
                     continue
-            
+
             return articles
-            
+
         except Exception as e:
             logger.error(f"Error fetching from Yahoo Finance: {e}")
             return []
-    
+
     async def _fetch_from_rss_feeds(self) -> List[Dict[str, Any]]:
         """Fetch news from financial RSS feeds."""
         try:
             articles = []
-            
+
             # Comprehensive financial news RSS feeds (expanded for maximum coverage)
             rss_feeds = [
                 # MarketWatch feeds
                 'https://feeds.marketwatch.com/marketwatch/topstories/',
                 'https://feeds.marketwatch.com/marketwatch/marketpulse/',
                 'https://feeds.marketwatch.com/marketwatch/realtimeheadlines/',
-                
+
                 # Yahoo Finance feeds (additional)
                 'https://feeds.finance.yahoo.com/rss/2.0/headline',
                 'https://feeds.finance.yahoo.com/rss/2.0/topfinstories',
                 'https://feeds.finance.yahoo.com/rss/2.0/stock',
                 'https://feeds.finance.yahoo.com/rss/2.0/marketnews',
                 'https://feeds.finance.yahoo.com/rss/2.0/industry',
-                
+
                 # CNBC feeds
                 'https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=100003114',
                 'https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=15839069',
                 'https://search.cnbc.com/rs/search/combinedcms/view.xml?partnerId=wrss01&id=100727362',
-                
+
                 # Financial Times feeds
                 'https://www.ft.com/rss/home',
                 'https://www.ft.com/markets?format=rss',
                 'https://www.ft.com/companies?format=rss',
-                
+
                 # Reuters Business feeds
                 'https://feeds.reuters.com/reuters/businessNews',
                 'https://feeds.reuters.com/news/wealth',
                 'https://feeds.reuters.com/reuters/companyNews',
-                
+
                 # Bloomberg feeds
                 'https://feeds.bloomberg.com/markets/news.rss',
                 'https://feeds.bloomberg.com/politics/news.rss',
-                
+
                 # Investing.com feeds
                 'https://www.investing.com/rss/news.rss',
                 'https://www.investing.com/rss/news_14.rss',
-                
+
                 # Benzinga feeds
                 'https://www.benzinga.com/topic/rss',
                 'https://www.benzinga.com/news/rss',
-                
+
                 # Seeking Alpha feeds
                 'https://seekingalpha.com/api/sa/combined/RSS.xml',
                 'https://seekingalpha.com/api/sa/combined/RSS_earnings.xml'
             ]
-            
+
             for feed_url in rss_feeds:
                 try:
                     async with aiohttp.ClientSession() as session:
@@ -707,28 +702,28 @@ Keep response under 300 words, focus on actionable insights."""
                 except Exception as e:
                     logger.warning(f"Failed to fetch from {feed_url}: {e}")
                     continue
-            
+
             logger.info(f"Total articles collected from all RSS feeds: {len(articles)}")
             return articles
-            
+
         except Exception as e:
             logger.error(f"Error fetching from RSS feeds: {e}")
             return []
-    
+
     def _parse_rss_content(self, content: str, source_url: str) -> List[Dict[str, Any]]:
         """Parse RSS content and extract articles."""
         try:
             import xml.etree.ElementTree as ET
-            
+
             articles = []
             root = ET.fromstring(content)
-            
+
             for item in root.findall('.//item'):
                 title = item.find('title')
                 description = item.find('description')
                 link = item.find('link')
                 pub_date = item.find('pubDate')
-                
+
                 if title is not None and title.text:
                     article = {
                         'title': title.text.strip(),
@@ -740,13 +735,13 @@ Keep response under 300 words, focus on actionable insights."""
                         'published_at': self._parse_rss_date(pub_date.text) if pub_date is not None and pub_date.text else datetime.now()
                     }
                     articles.append(article)
-            
+
             return articles
-            
+
         except Exception as e:
             logger.error(f"Error parsing RSS content: {e}")
             return []
-    
+
     def _get_source_name(self, source_url: str) -> str:
         """Extract source name from URL."""
         if 'yahoo' in source_url:
@@ -759,11 +754,11 @@ Keep response under 300 words, focus on actionable insights."""
             return 'Reuters'
         else:
             return 'Financial News'
-    
+
     def _categorize_article(self, title: str) -> str:
         """Categorize article based on title content into specific sectors."""
         title_lower = title.lower()
-        
+
         # Technology sector
         if any(word in title_lower for word in ['tech', 'ai', 'artificial intelligence', 'nvidia', 'apple', 'microsoft', 'google', 'amazon', 'meta', 'tesla', 'software', 'cloud', 'cyber', 'digital', 'semiconductor', 'chip']):
             return 'technology'
@@ -787,12 +782,12 @@ Keep response under 300 words, focus on actionable insights."""
             return 'commodities'
         else:
             return 'general_market'
-    
+
     def _extract_tags(self, title: str) -> List[str]:
         """Extract relevant tags from article title."""
         title_lower = title.lower()
         tags = []
-        
+
         # Common financial tags
         tag_keywords = {
             'federal_reserve': ['fed', 'federal reserve', 'interest rate'],
@@ -802,13 +797,13 @@ Keep response under 300 words, focus on actionable insights."""
             'oil': ['oil', 'energy', 'crude'],
             'ai': ['ai', 'artificial intelligence', 'machine learning']
         }
-        
+
         for tag, keywords in tag_keywords.items():
             if any(keyword in title_lower for keyword in keywords):
                 tags.append(tag)
-        
+
         return tags
-    
+
     def _parse_rss_date(self, date_str: str) -> datetime:
         """Parse RSS date string to datetime."""
         try:
@@ -820,18 +815,18 @@ Keep response under 300 words, focus on actionable insights."""
             return parsed_date
         except:
             return datetime.now()
-    
+
     def _deduplicate_articles(self, articles: List[Dict[str, Any]]) -> List[Dict[str, Any]]:
         """Remove duplicate articles based on title similarity."""
         unique_articles = []
         seen_titles = set()
-        
+
         for article in articles:
             title_lower = article['title'].lower()
             if title_lower not in seen_titles:
                 seen_titles.add(title_lower)
                 unique_articles.append(article)
-        
+
         return unique_articles
 
     async def create_sample_data(self):
@@ -839,7 +834,7 @@ Keep response under 300 words, focus on actionable insights."""
         try:
             # First, try to fetch real news articles
             real_articles = await self.fetch_real_news_articles()
-            
+
             async with self.db_pool.acquire() as conn:
                 # Use real articles if available, otherwise fall back to sample data
                 if real_articles:
@@ -910,21 +905,21 @@ Keep response under 300 words, focus on actionable insights."""
                             'published_at': datetime.now() - timedelta(hours=10)
                         }
                     ]
-                
+
                 # Insert documents (real or sample)
                 for doc in documents:
                     await conn.execute("""
-                        INSERT INTO rag_news_documents 
+                        INSERT INTO rag_news_documents
                         (doc_id, title, content, source, url, category, tags, published_at, ingested_at)
                         VALUES ($1, $2, $3, $4, $5, $6, $7, $8, $9)
                         ON CONFLICT (doc_id) DO UPDATE SET
                             title = EXCLUDED.title,
                             content = EXCLUDED.content,
                             updated_at = EXCLUDED.ingested_at
-                    """, doc['doc_id'], doc['title'], doc['content'], doc['source'], 
-                         doc['url'], doc['category'], doc['tags'], doc['published_at'], 
+                    """, doc['doc_id'], doc['title'], doc['content'], doc['source'],
+                         doc['url'], doc['category'], doc['tags'], doc['published_at'],
                          datetime.now())
-                
+
                 # Sample RAG analysis
                 sample_analysis = {
                     'query': 'Market events and news affecting NVDA stock price and trading',
@@ -935,16 +930,16 @@ Keep response under 300 words, focus on actionable insights."""
                     'relevant_doc_ids': ['news_002', 'news_005', 'news_004'],
                     'response_time_ms': 1250
                 }
-                
+
                 await conn.execute("""
-                    INSERT INTO rag_analysis 
+                    INSERT INTO rag_analysis
                     (query, llm_response, confidence, reasoning, analysis_type, relevant_doc_ids, response_time_ms)
                     VALUES ($1, $2, $3, $4, $5, $6, $7)
-                """, sample_analysis['query'], sample_analysis['llm_response'], 
+                """, sample_analysis['query'], sample_analysis['llm_response'],
                      sample_analysis['confidence'], sample_analysis['reasoning'],
                      sample_analysis['analysis_type'], sample_analysis['relevant_doc_ids'],
                      sample_analysis['response_time_ms'])
-                
+
                 # Sample performance metrics
                 performance_metrics = [
                     ('rag_accuracy', 0.87, 'percentage', 'Overall RAG system accuracy'),
@@ -953,19 +948,19 @@ Keep response under 300 words, focus on actionable insights."""
                     ('llm_confidence_score', 0.82, 'score', 'Average LLM confidence score'),
                     ('query_processing_rate', 45.5, 'queries/hour', 'Rate of query processing')
                 ]
-                
+
                 for metric_name, metric_value, metric_unit, notes in performance_metrics:
                     await conn.execute("""
-                        INSERT INTO rag_performance 
+                        INSERT INTO rag_performance
                         (metric_name, metric_value, metric_unit, measurement_date, notes)
                         VALUES ($1, $2, $3, $4, $5)
                     """, metric_name, metric_value, metric_unit, datetime.now(), notes)
-                
+
                 logger.info("Sample RAG Event Agent data created successfully")
-                
+
         except Exception as e:
             logger.error(f"Error creating sample RAG Event Agent data: {e}")
-    
+
     def _get_fallback_summary(self) -> Dict[str, Any]:
         """Get fallback summary data when database is unavailable."""
         return {
@@ -980,13 +975,13 @@ Keep response under 300 words, focus on actionable insights."""
             "avg_confidence": 0.0,
             "last_updated": datetime.now().isoformat()
         }
-    
+
     async def get_historical_analyses(self, limit: int = 20, days: int = 7) -> List[Dict[str, Any]]:
         """Get historical RAG analyses for insights and trend analysis."""
         try:
             async with self.db_pool.acquire() as conn:
                 rows = await conn.fetch("""
-                    SELECT 
+                    SELECT
                         id,
                         query,
                         llm_response,
@@ -1001,7 +996,7 @@ Keep response under 300 words, focus on actionable insights."""
                     ORDER BY created_at DESC
                     LIMIT $1
                 """ % days, limit)
-                
+
                 analyses = []
                 for row in rows:
                     analysis_id = f"analysis_{row['id']}_{row['created_at'].strftime('%Y%m%d_%H%M%S')}"
@@ -1016,20 +1011,20 @@ Keep response under 300 words, focus on actionable insights."""
                         "response_time_ms": row['response_time_ms'],
                         "created_at": row['created_at'].isoformat()
                     })
-                
+
                 return analyses
-                
+
         except Exception as e:
             logger.error(f"Error getting historical analyses: {e}")
             return []
-    
+
     async def get_analysis_insights(self, days: int = 30) -> Dict[str, Any]:
         """Get comprehensive insights from historical RAG analyses."""
         try:
             async with self.db_pool.acquire() as conn:
                 # Get analysis statistics
                 analysis_stats = await conn.fetchrow("""
-                    SELECT 
+                    SELECT
                         COUNT(*) as total_analyses,
                         AVG(confidence) as avg_confidence,
                         AVG(response_time_ms) as avg_response_time,
@@ -1039,10 +1034,10 @@ Keep response under 300 words, focus on actionable insights."""
                     FROM rag_analysis
                     WHERE created_at >= NOW() - INTERVAL '%s days'
                 """ % days)
-                
+
                 # Get query patterns
                 query_patterns = await conn.fetch("""
-                    SELECT 
+                    SELECT
                         query,
                         COUNT(*) as frequency,
                         AVG(confidence) as avg_confidence
@@ -1052,10 +1047,10 @@ Keep response under 300 words, focus on actionable insights."""
                     ORDER BY frequency DESC
                     LIMIT 10
                 """ % days)
-                
+
                 # Get confidence trends
                 confidence_trends = await conn.fetch("""
-                    SELECT 
+                    SELECT
                         DATE(created_at) as analysis_date,
                         AVG(confidence) as avg_confidence,
                         COUNT(*) as analysis_count
@@ -1064,10 +1059,10 @@ Keep response under 300 words, focus on actionable insights."""
                     GROUP BY DATE(created_at)
                     ORDER BY analysis_date DESC
                 """ % days)
-                
+
                 # Get performance metrics
                 performance_metrics = await conn.fetch("""
-                    SELECT 
+                    SELECT
                         metric_name,
                         AVG(metric_value) as avg_value,
                         MAX(metric_value) as max_value,
@@ -1076,7 +1071,7 @@ Keep response under 300 words, focus on actionable insights."""
                     WHERE measurement_date >= NOW() - INTERVAL '%s days'
                     GROUP BY metric_name
                 """ % days)
-                
+
                 return {
                     "analysis_statistics": {
                         "total_analyses": analysis_stats['total_analyses'] or 0,
@@ -1111,7 +1106,7 @@ Keep response under 300 words, focus on actionable insights."""
                     },
                     "insights_generated_at": datetime.now().isoformat()
                 }
-                
+
         except Exception as e:
             logger.error(f"Error getting analysis insights: {e}")
             return {
@@ -1121,7 +1116,7 @@ Keep response under 300 words, focus on actionable insights."""
                 "performance_metrics": {},
                 "insights_generated_at": datetime.now().isoformat()
             }
-    
+
     def _get_fallback_analysis(self) -> Dict[str, Any]:
         """Get fallback analysis data when database is unavailable."""
         return {

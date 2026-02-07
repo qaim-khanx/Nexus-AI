@@ -61,25 +61,25 @@ export class MetaEvaluationAgentComponent implements OnInit {
   }
 
   getRegimeColor(regime: string): string {
-    switch (regime.toLowerCase()) {
-      case 'bull': return 'text-green-600 bg-green-100';
-      case 'bear': return 'text-red-600 bg-red-100';
-      case 'volatile': return 'text-yellow-600 bg-yellow-100';
-      case 'trending': return 'text-blue-600 bg-blue-100';
-      default: return 'text-gray-600 bg-gray-100';
+    switch (regime?.toLowerCase()) {
+      case 'bull': return 'text-emerald-600 dark:text-emerald-400 bg-emerald-100 dark:bg-emerald-500/10 border border-emerald-200 dark:border-emerald-500/20';
+      case 'bear': return 'text-red-600 dark:text-red-400 bg-red-100 dark:bg-red-500/10 border border-red-200 dark:border-red-500/20';
+      case 'volatile': return 'text-amber-600 dark:text-amber-400 bg-amber-100 dark:bg-amber-500/10 border border-amber-200 dark:border-amber-500/20';
+      case 'trending': return 'text-blue-600 dark:text-blue-400 bg-blue-100 dark:bg-blue-500/10 border border-blue-200 dark:border-blue-500/20';
+      default: return 'text-gray-600 dark:text-slate-400 bg-gray-100 dark:bg-slate-500/10 border border-gray-200 dark:border-slate-500/20';
     }
   }
 
   getPerformanceColor(score: number): string {
-    if (score >= 0.8) return 'text-green-600';
-    if (score >= 0.6) return 'text-yellow-600';
-    return 'text-red-600';
+    if (score >= 0.8) return 'text-emerald-600 dark:text-emerald-400';
+    if (score >= 0.6) return 'text-amber-600 dark:text-amber-400';
+    return 'text-red-600 dark:text-red-400';
   }
 
   getRankBadgeColor(rank: number): string {
-    if (rank === 1) return 'bg-yellow-100 text-yellow-800';
-    if (rank === 2) return 'bg-gray-100 text-gray-800';
-    if (rank === 3) return 'bg-orange-100 text-orange-800';
-    return 'bg-blue-100 text-blue-800';
+    if (rank === 1) return 'bg-amber-100 dark:bg-amber-500/20 text-amber-600 dark:text-amber-400 border border-amber-200 dark:border-amber-500/30';
+    if (rank === 2) return 'bg-gray-100 dark:bg-slate-500/20 text-gray-600 dark:text-slate-300 border border-gray-200 dark:border-slate-500/30';
+    if (rank === 3) return 'bg-orange-100 dark:bg-orange-500/20 text-orange-600 dark:text-orange-400 border border-orange-200 dark:border-orange-500/30';
+    return 'bg-blue-100 dark:bg-blue-500/20 text-blue-600 dark:text-blue-400 border border-blue-200 dark:border-blue-500/30';
   }
 }

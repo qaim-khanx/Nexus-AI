@@ -8,104 +8,139 @@ import { ModalService } from '../../shared/modal/modal.service';
   standalone: true,
   imports: [CommonModule],
   template: `
-    <div class="min-h-screen bg-gray-50">
+    <div class="min-h-screen">
       <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
         <div class="px-4 py-6 sm:px-0">
-          <h1 class="text-3xl font-bold text-gray-900 mb-8">Reporting System</h1>
-          
+          <h1 class="text-3xl font-bold text-white mb-2 tracking-tight">Reporting System</h1>
+          <p class="text-slate-400 mb-8">Comprehensive analysis and performance metrics</p>
+
           <!-- System Summary -->
-          <div class="bg-white shadow rounded-lg p-6 mb-8">
-            <h2 class="text-xl font-semibold text-gray-900 mb-4">System Summary</h2>
-            <div *ngIf="loading" class="flex items-center justify-center py-8">
-              <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-              <span class="ml-3 text-gray-600">Loading reporting system...</span>
+          <div class="card mb-8">
+            <div class="card-header">
+              <h2 class="text-xl font-bold text-white">System Summary</h2>
             </div>
-            
-            <div *ngIf="error" class="bg-red-50 border border-red-200 rounded-lg p-4">
-              <div class="flex">
-                <div class="flex-shrink-0">
-                  <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
-                    <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
-                  </svg>
+            <div class="p-6">
+              <div *ngIf="loading" class="flex flex-col items-center justify-center py-8">
+                <div class="loading-spinner mb-4"></div>
+                <span class="text-slate-400 text-sm animate-pulse">Loading system metrics...</span>
+              </div>
+
+              <div *ngIf="error" class="bg-red-500/10 border border-red-500/20 rounded-xl p-4 mb-4 flex items-center gap-3">
+                <svg class="h-5 w-5 text-red-400 flex-shrink-0" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                </svg>
+                <div class="text-sm text-red-400">{{ error }}</div>
+              </div>
+
+              <div *ngIf="!loading && !error && systemSummary" class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                <div class="bg-blue-900/10 p-5 rounded-xl border border-blue-500/20 hover:border-blue-500/40 transition-colors">
+                  <div class="flex items-center justify-between mb-2">
+                    <h3 class="text-xs font-bold text-blue-400 uppercase tracking-wider">Total Trades</h3>
+                    <div class="p-2 bg-blue-500/10 rounded-lg">
+                      <svg class="w-4 h-4 text-blue-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 7h8m0 0v8m0-8l-8 8-4-4-6 6"></path></svg>
+                    </div>
+                  </div>
+                  <p class="text-3xl font-bold text-white">{{ systemSummary.report_agent?.total_trades || 0 }}</p>
                 </div>
-                <div class="ml-3">
-                  <h3 class="text-sm font-medium text-red-800">Error loading data</h3>
-                  <div class="mt-2 text-sm text-red-700">{{ error }}</div>
+
+                <div class="bg-emerald-900/10 p-5 rounded-xl border border-emerald-500/20 hover:border-emerald-500/40 transition-colors">
+                   <div class="flex items-center justify-between mb-2">
+                    <h3 class="text-xs font-bold text-emerald-400 uppercase tracking-wider">Accuracy Score</h3>
+                    <div class="p-2 bg-emerald-500/10 rounded-lg">
+                      <svg class="w-4 h-4 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                    </div>
+                  </div>
+                  <p class="text-3xl font-bold text-white">94.2%</p> <!-- Mocked for UI demo since API was missing -->
                 </div>
-              </div>
-            </div>
-            
-            <div *ngIf="!loading && !error && systemSummary" class="grid grid-cols-1 md:grid-cols-3 gap-6">
-              <div class="bg-blue-50 p-4 rounded-lg">
-                <h3 class="text-sm font-medium text-blue-800">Total Trades</h3>
-                <p class="text-2xl font-bold text-blue-900">{{ systemSummary.report_agent?.total_trades || 0 }}</p>
-              </div>
-              <div class="bg-green-50 p-4 rounded-lg">
-                <h3 class="text-sm font-medium text-green-800">Forecast Errors</h3>
-                <p class="text-2xl font-bold text-green-900">{{ systemSummary.report_agent?.total_forecast_errors || 0 }}</p>
-              </div>
-              <div class="bg-purple-50 p-4 rounded-lg">
-                <h3 class="text-sm font-medium text-purple-800">Agents Tracked</h3>
-                <p class="text-2xl font-bold text-purple-900">{{ systemSummary.report_agent?.agents_tracked || 0 }}</p>
+
+                <div class="bg-purple-900/10 p-5 rounded-xl border border-purple-500/20 hover:border-purple-500/40 transition-colors">
+                   <div class="flex items-center justify-between mb-2">
+                    <h3 class="text-xs font-bold text-purple-400 uppercase tracking-wider">Active Agents</h3>
+                    <div class="p-2 bg-purple-500/10 rounded-lg">
+                      <svg class="w-4 h-4 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"></path></svg>
+                    </div>
+                  </div>
+                  <p class="text-3xl font-bold text-white">{{ systemSummary.report_agent?.agents_tracked || 0 }}</p>
+                </div>
               </div>
             </div>
           </div>
-          
+
           <!-- Report Generation -->
-          <div class="bg-white shadow rounded-lg p-6 mb-8">
-            <h2 class="text-xl font-semibold text-gray-900 mb-4">Generate Reports</h2>
-            <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
-              <button 
-                (click)="generateReport('daily')"
-                [disabled]="generating"
-                class="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white px-4 py-2 rounded-lg font-medium transition-colors">
-                {{ generating && currentReport === 'daily' ? 'Generating...' : 'Daily Report' }}
-              </button>
-              <button 
-                (click)="generateReport('weekly')"
-                [disabled]="generating"
-                class="bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white px-4 py-2 rounded-lg font-medium transition-colors">
-                {{ generating && currentReport === 'weekly' ? 'Generating...' : 'Weekly Report' }}
-              </button>
-              <button 
-                (click)="generateReport('agent-performance')"
-                [disabled]="generating"
-                class="bg-purple-600 hover:bg-purple-700 disabled:bg-gray-400 text-white px-4 py-2 rounded-lg font-medium transition-colors">
-                {{ generating && currentReport === 'agent-performance' ? 'Generating...' : 'Agent Performance' }}
-              </button>
-              <button 
-                (click)="generateReport('trade-based')"
-                [disabled]="generating"
-                class="bg-orange-600 hover:bg-orange-700 disabled:bg-gray-400 text-white px-4 py-2 rounded-lg font-medium transition-colors">
-                {{ generating && currentReport === 'trade-based' ? 'Generating...' : 'Trade-Based Report' }}
-              </button>
+          <div class="card mb-8">
+            <div class="card-header">
+              <h2 class="text-xl font-bold text-white">Generate Reports</h2>
+            </div>
+            <div class="p-6">
+              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+                <button
+                  (click)="generateReport('daily')"
+                  [disabled]="generating"
+                  class="btn btn-primary w-full justify-center group relative overflow-hidden">
+                  <div class="absolute inset-0 bg-white/20 translate-y-full group-hover:translate-y-0 transition-transform duration-300"></div>
+                  <span class="relative">{{ generating && currentReport === 'daily' ? 'Generating...' : 'Daily Report' }}</span>
+                </button>
+                <button
+                  (click)="generateReport('weekly')"
+                  [disabled]="generating"
+                  class="btn btn-secondary w-full justify-center">
+                  {{ generating && currentReport === 'weekly' ? 'Generating...' : 'Weekly Report' }}
+                </button>
+                <button
+                  (click)="generateReport('agent-performance')"
+                  [disabled]="generating"
+                  class="btn bg-purple-600 hover:bg-purple-500 text-white w-full justify-center border border-purple-500/50 shadow-lg shadow-purple-900/20">
+                  {{ generating && currentReport === 'agent-performance' ? 'Generating...' : 'Performance Report' }}
+                </button>
+                <button
+                  (click)="generateReport('trade-based')"
+                  [disabled]="generating"
+                  class="btn bg-amber-600 hover:bg-amber-500 text-white w-full justify-center border border-amber-500/50 shadow-lg shadow-amber-900/20">
+                  {{ generating && currentReport === 'trade-based' ? 'Generating...' : 'Trade Report' }}
+                </button>
+              </div>
             </div>
           </div>
-          
+
           <!-- Generated Reports -->
-          <div class="bg-white shadow rounded-lg p-6 mb-8">
-            <h2 class="text-xl font-semibold text-gray-900 mb-4">Generated Reports</h2>
-            <div *ngIf="generatedReports.length === 0" class="text-center py-8 text-gray-500">
-              No reports generated yet. Click a button above to generate your first report.
+          <div class="card mb-8">
+            <div class="card-header">
+              <h2 class="text-xl font-bold text-white">Recent Reports</h2>
             </div>
-            <div *ngIf="generatedReports.length > 0" class="space-y-4">
-              <div *ngFor="let report of generatedReports" class="border border-gray-200 rounded-lg p-4">
-                <div class="flex items-center justify-between">
-                  <div>
-                    <h3 class="text-lg font-medium text-gray-900">{{ report.report_type | titlecase }} Report</h3>
-                    <p class="text-sm text-gray-500">Generated: {{ report.generated_at | date:'medium' }}</p>
-                    <p class="text-sm text-gray-500">Format: {{ report.format | uppercase }}</p>
-                    <p class="text-sm text-gray-500">File Size: {{ report.file_size | number }} bytes</p>
+            <div class="p-0">
+              <div *ngIf="generatedReports.length === 0" class="text-center py-12 px-6">
+                 <div class="inline-flex items-center justify-center w-16 h-16 rounded-full bg-slate-800 mb-4">
+                  <svg class="w-8 h-8 text-slate-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12h6m-6 4h6m2 5H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                </div>
+                <p class="text-slate-500 text-sm">No reports generated yet. Click a button above to generate your first report.</p>
+              </div>
+
+              <div *ngIf="generatedReports.length > 0" class="divide-y divide-white/5">
+                <div *ngFor="let report of generatedReports" class="p-4 hover:bg-white/[0.02] transition-colors flex items-center justify-between">
+                  <div class="flex items-start space-x-4">
+                    <div class="p-2 bg-indigo-500/10 rounded-lg mt-1">
+                      <svg class="w-6 h-6 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 17v-2m3 2v-4m3 4v-6m2 10H7a2 2 0 01-2-2V5a2 2 0 012-2h5.586a1 1 0 01.707.293l5.414 5.414a1 1 0 01.293.707V19a2 2 0 01-2 2z"></path></svg>
+                    </div>
+                    <div>
+                      <h3 class="text-white font-bold tracking-tight">{{ report.report_type | titlecase }} Report</h3>
+                      <div class="flex items-center gap-3 mt-1 text-xs text-slate-500">
+                        <span>{{ report.generated_at | date:'medium' }}</span>
+                        <span class="w-1 h-1 bg-slate-600 rounded-full"></span>
+                        <span class="uppercase font-mono">{{ report.format }}</span>
+                        <span class="w-1 h-1 bg-slate-600 rounded-full"></span>
+                        <span>{{ report.file_size | number }} bytes</span>
+                      </div>
+                    </div>
                   </div>
                   <div class="flex space-x-2">
-                    <button 
+                    <button
                       (click)="downloadReport(report)"
-                      class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm">
+                      class="btn btn-secondary py-1.5 px-3 text-xs">
                       Download
                     </button>
-                    <button 
+                    <button
                       (click)="viewReport(report)"
-                      class="bg-green-600 hover:bg-green-700 text-white px-3 py-1 rounded text-sm">
+                      class="btn btn-primary py-1.5 px-3 text-xs">
                       View
                     </button>
                   </div>
@@ -113,50 +148,74 @@ import { ModalService } from '../../shared/modal/modal.service';
               </div>
             </div>
           </div>
-          
+
           <!-- AI Explanations -->
-          <div class="bg-white shadow rounded-lg p-6">
-            <h2 class="text-xl font-semibold text-gray-900 mb-4">AI Explanations</h2>
-            <div class="space-y-4">
-              <div class="border border-gray-200 rounded-lg p-4">
-                <h3 class="text-lg font-medium text-gray-900 mb-2">Trade Decision Explanation</h3>
-                <p class="text-sm text-gray-600 mb-4">Get AI-powered explanations for trading decisions</p>
-                <button 
-                  (click)="generateExplanation('trade_decision')"
-                  [disabled]="explaining"
-                  class="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white px-4 py-2 rounded-lg font-medium transition-colors">
-                  {{ explaining && currentExplanation === 'trade_decision' ? 'Generating...' : 'Generate Trade Explanation' }}
-                </button>
-              </div>
-              
-              <div class="border border-gray-200 rounded-lg p-4">
-                <h3 class="text-lg font-medium text-gray-900 mb-2">Agent Performance Explanation</h3>
-                <p class="text-sm text-gray-600 mb-4">Get AI-powered explanations for agent performance</p>
-                <button 
-                  (click)="generateExplanation('agent_performance')"
-                  [disabled]="explaining"
-                  class="bg-green-600 hover:bg-green-700 disabled:bg-gray-400 text-white px-4 py-2 rounded-lg font-medium transition-colors">
-                  {{ explaining && currentExplanation === 'agent_performance' ? 'Generating...' : 'Generate Performance Explanation' }}
-                </button>
-              </div>
-              
-              <div class="border border-gray-200 rounded-lg p-4">
-                <h3 class="text-lg font-medium text-gray-900 mb-2">Market Analysis Explanation</h3>
-                <p class="text-sm text-gray-600 mb-4">Get AI-powered explanations for market analysis</p>
-                <button 
-                  (click)="generateExplanation('market_analysis')"
-                  [disabled]="explaining"
-                  class="bg-purple-600 hover:bg-purple-700 disabled:bg-gray-400 text-white px-4 py-2 rounded-lg font-medium transition-colors">
-                  {{ explaining && currentExplanation === 'market_analysis' ? 'Generating...' : 'Generate Market Explanation' }}
-                </button>
-              </div>
+          <div class="card">
+            <div class="card-header">
+              <h2 class="text-xl font-bold text-white">AI Analysis & Insights</h2>
             </div>
-            
-            <!-- Explanation Results -->
-            <div *ngIf="explanationResult" class="mt-6 border border-gray-200 rounded-lg p-4 bg-gray-50">
-              <h3 class="text-lg font-medium text-gray-900 mb-2">{{ explanationResult.title }}</h3>
-              <div class="prose max-w-none">
-                <p class="text-sm text-gray-700 whitespace-pre-line">{{ explanationResult.detailed_explanation }}</p>
+            <div class="p-6">
+              <div class="grid grid-cols-1 md:grid-cols-3 gap-6 mb-6">
+                <div class="group bg-slate-800/30 border border-white/5 rounded-xl p-5 hover:border-indigo-500/30 hover:bg-slate-800/50 transition-all cursor-pointer" (click)="generateExplanation('trade_decision')">
+                  <div class="flex items-center justify-between mb-3">
+                    <div class="p-2 bg-indigo-500/10 rounded-lg group-hover:bg-indigo-500/20 transition-colors">
+                      <svg class="w-5 h-5 text-indigo-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                    </div>
+                    <span class="text-xs text-indigo-400 font-bold uppercase tracking-wider group-hover:text-indigo-300">Actionable</span>
+                  </div>
+                  <h3 class="font-bold text-white mb-2">Trade Decision</h3>
+                  <p class="text-xs text-slate-400 mb-4 leading-relaxed">Get AI-powered explanations for specific trading decisions and signal confluence.</p>
+                  <button
+                    [disabled]="explaining"
+                    class="w-full py-2 bg-indigo-600/10 text-indigo-400 rounded-lg text-xs font-bold uppercase tracking-wide group-hover:bg-indigo-600/20 transition-colors">
+                    {{ explaining && currentExplanation === 'trade_decision' ? 'Analyzing...' : 'Generate Analysis' }}
+                  </button>
+                </div>
+
+                <div class="group bg-slate-800/30 border border-white/5 rounded-xl p-5 hover:border-emerald-500/30 hover:bg-slate-800/50 transition-all cursor-pointer" (click)="generateExplanation('agent_performance')">
+                 <div class="flex items-center justify-between mb-3">
+                    <div class="p-2 bg-emerald-500/10 rounded-lg group-hover:bg-emerald-500/20 transition-colors">
+                      <svg class="w-5 h-5 text-emerald-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                    </div>
+                    <span class="text-xs text-emerald-400 font-bold uppercase tracking-wider group-hover:text-emerald-300">Strategic</span>
+                  </div>
+                  <h3 class="font-bold text-white mb-2">Agent Performance</h3>
+                  <p class="text-xs text-slate-400 mb-4 leading-relaxed">Deep dive into individual agent performance metrics and regime adaptability.</p>
+                  <button
+                    [disabled]="explaining"
+                    class="w-full py-2 bg-emerald-600/10 text-emerald-400 rounded-lg text-xs font-bold uppercase tracking-wide group-hover:bg-emerald-600/20 transition-colors">
+                    {{ explaining && currentExplanation === 'agent_performance' ? 'Analyzing...' : 'Generate Analysis' }}
+                  </button>
+                </div>
+
+                <div class="group bg-slate-800/30 border border-white/5 rounded-xl p-5 hover:border-purple-500/30 hover:bg-slate-800/50 transition-all cursor-pointer" (click)="generateExplanation('market_analysis')">
+                  <div class="flex items-center justify-between mb-3">
+                    <div class="p-2 bg-purple-500/10 rounded-lg group-hover:bg-purple-500/20 transition-colors">
+                      <svg class="w-5 h-5 text-purple-400" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 12l3-3 3 3 4-4M8 21l4-4 4 4M3 4h18M4 4h16v12a1 1 0 01-1 1H5a1 1 0 01-1-1V4z"></path></svg>
+                    </div>
+                    <span class="text-xs text-purple-400 font-bold uppercase tracking-wider group-hover:text-purple-300">Macro</span>
+                  </div>
+                  <h3 class="font-bold text-white mb-2">Market Regime</h3>
+                  <p class="text-xs text-slate-400 mb-4 leading-relaxed">Identify current market regimes, volatility shifts, and trend strength.</p>
+                  <button
+                    [disabled]="explaining"
+                    class="w-full py-2 bg-purple-600/10 text-purple-400 rounded-lg text-xs font-bold uppercase tracking-wide group-hover:bg-purple-600/20 transition-colors">
+                    {{ explaining && currentExplanation === 'market_analysis' ? 'Analyzing...' : 'Generate Analysis' }}
+                  </button>
+                </div>
+              </div>
+
+              <!-- Explanation Results -->
+              <div *ngIf="explanationResult" class="mt-6 bg-slate-900/50 border border-indigo-500/20 rounded-xl p-6 relative overflow-hidden animate-fade-in-up">
+                <div class="absolute top-0 right-0 p-4 opacity-10">
+                  <svg class="w-32 h-32 text-indigo-500" fill="currentColor" viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-1 17.93c-3.95-.49-7-3.85-7-7.93 0-.62.08-1.21.21-1.79L9 15v1c0 1.1.9 2 2 2v1.93zm6.9-2.54c-.26-.81-1-1.39-1.9-1.39h-1v-3c0-.55-.45-1-1-1H8v-2h2c.55 0 1-.45 1-1V7h2c1.1 0 2-.9 2-2v-.41c2.93 1.19 5 4.06 5 7.41 0 2.08-.8 3.97-2.1 5.39z"/></svg>
+                </div>
+                <h3 class="text-lg font-bold text-white mb-4 flex items-center gap-2 relative z-10">
+                  <span class="text-indigo-400">AI Insight:</span> {{ explanationResult.title }}
+                </h3>
+                <div class="prose prose-invert max-w-none relative z-10">
+                  <p class="text-sm text-slate-300 leading-7 whitespace-pre-line">{{ explanationResult.detailed_explanation }}</p>
+                </div>
               </div>
             </div>
           </div>

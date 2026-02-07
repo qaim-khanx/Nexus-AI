@@ -1,64 +1,154 @@
-<div class="space-y-6 max-w-7xl mx-auto">
-  <div>
-    <h1 class="text-3xl font-bold text-gray-900">Risk Analysis</h1>
-    <p class="text-gray-600">Risk assessment and management tools</p>
-  </div>
-
-  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
-    <div class="bg-white rounded-lg shadow p-6">
-      <h3 class="text-lg font-semibold text-gray-900">Risk Score</h3>
-      <p class="text-2xl font-bold text-red-600" *ngIf="riskAnalysis$ | async as data">{{ data.overall_risk_score }}%</p>
+<div class="min-h-screen">
+  <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+    <div class="mb-8">
+      <h1 class="text-3xl font-bold text-gray-900 dark:text-white tracking-tight">Risk Intelligence</h1>
+      <p class="text-gray-600 dark:text-slate-400 mt-1">Advanced exposure monitoring and safety valve protocols</p>
     </div>
 
-    <div class="bg-white rounded-lg shadow p-6">
-      <h3 class="text-lg font-semibold text-gray-900">VaR (95%)</h3>
-      <p class="text-2xl font-bold text-blue-600" *ngIf="riskAnalysis$ | async as data">${{ data.risk_metrics.var_95 }}</p>
-    </div>
-
-    <div class="bg-white rounded-lg shadow p-6">
-      <h3 class="text-lg font-semibold text-gray-900">Volatility</h3>
-      <p class="text-2xl font-bold text-purple-600" *ngIf="riskAnalysis$ | async as data">{{ data.market_risk.volatility }}%</p>
-    </div>
-
-    <div class="bg-white rounded-lg shadow p-6">
-      <h3 class="text-lg font-semibold text-gray-900">Market Regime</h3>
-      <p class="text-2xl font-bold text-green-600" *ngIf="marketRisk$ | async as data">{{ data.market_regime || 'neutral' }}</p>
-    </div>
-  </div>
-
-  <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
-    <div class="bg-white rounded-lg shadow p-6">
-      <h3 class="text-xl font-bold text-gray-900 mb-4">Risk Metrics</h3>
-      <div class="space-y-4">
-        <div class="flex justify-between" *ngIf="riskMetrics$ | async as data">
-          <span class="text-gray-600">Max Drawdown</span>
-          <span class="font-semibold text-red-600">{{ data.max_drawdown }}%</span>
+    <!-- Key Metrics Grid -->
+    <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6 mb-8">
+      <!-- Risk Score -->
+      <div class="bg-white dark:bg-slate-800/50 backdrop-blur-sm border border-gray-200 dark:border-white/5 rounded-xl p-6 hover:bg-gray-50 dark:hover:bg-slate-800/70 transition-colors shadow-sm dark:shadow-none">
+        <h3 class="text-sm font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider mb-2">Overall Risk Score</h3>
+        <div *ngIf="(riskAnalysis$ | async) as data; else loadingSimple">
+          <div class="flex items-end gap-2">
+            <span class="text-3xl font-bold" [ngClass]="{
+              'text-emerald-400': data.overall_risk_score < 30,
+              'text-amber-400': data.overall_risk_score >= 30 && data.overall_risk_score < 70,
+              'text-red-400': data.overall_risk_score >= 70
+            }">{{ data.overall_risk_score }}</span>
+            <span class="text-sm text-gray-400 dark:text-slate-500 mb-1">/ 100</span>
+          </div>
+          <div class="w-full bg-gray-200 dark:bg-slate-700 h-1.5 mt-3 rounded-full overflow-hidden">
+            <div class="h-full rounded-full transition-all duration-500"
+                 [style.width.%]="data.overall_risk_score"
+                 [ngClass]="{
+                   'bg-emerald-500': data.overall_risk_score < 30,
+                   'bg-amber-500': data.overall_risk_score >= 30 && data.overall_risk_score < 70,
+                   'bg-red-500': data.overall_risk_score >= 70
+                 }"></div>
+          </div>
         </div>
-        <div class="flex justify-between" *ngIf="riskMetrics$ | async as data">
-          <span class="text-gray-600">Beta</span>
-          <span class="font-semibold text-blue-600">{{ data.beta }}</span>
+      </div>
+
+      <!-- VaR -->
+      <div class="bg-white dark:bg-slate-800/50 backdrop-blur-sm border border-gray-200 dark:border-white/5 rounded-xl p-6 hover:bg-gray-50 dark:hover:bg-slate-800/70 transition-colors shadow-sm dark:shadow-none">
+        <h3 class="text-sm font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider mb-2">VaR (95% Conf.)</h3>
+        <div *ngIf="(riskAnalysis$ | async) as data; else loadingSimple">
+          <p class="text-3xl font-bold text-indigo-400">{{ formatCurrency(data.risk_metrics.var_95) }}</p>
+          <p class="text-xs text-gray-500 dark:text-slate-500 mt-1">Daily Value at Risk</p>
         </div>
-        <div class="flex justify-between" *ngIf="riskMetrics$ | async as data">
-          <span class="text-gray-600">Sharpe Ratio</span>
-          <span class="font-semibold text-gray-600">{{ data.sharpe_ratio }}</span>
+      </div>
+
+      <!-- Volatility -->
+      <div class="bg-white dark:bg-slate-800/50 backdrop-blur-sm border border-gray-200 dark:border-white/5 rounded-xl p-6 hover:bg-gray-50 dark:hover:bg-slate-800/70 transition-colors shadow-sm dark:shadow-none">
+        <h3 class="text-sm font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider mb-2">Market Volatility</h3>
+        <div *ngIf="(riskAnalysis$ | async) as data; else loadingSimple">
+           <p class="text-3xl font-bold text-purple-400">{{ data.market_risk.volatility | number:'1.1-2' }}%</p>
+            <p class="text-xs text-gray-500 dark:text-slate-500 mt-1">Annualized Volatility</p>
+        </div>
+      </div>
+
+      <!-- Market Regime -->
+      <div class="bg-white dark:bg-slate-800/50 backdrop-blur-sm border border-gray-200 dark:border-white/5 rounded-xl p-6 hover:bg-gray-50 dark:hover:bg-slate-800/70 transition-colors shadow-sm dark:shadow-none">
+        <h3 class="text-sm font-medium text-gray-500 dark:text-slate-400 uppercase tracking-wider mb-2">Market Regime</h3>
+        <div *ngIf="(marketRisk$ | async) as data; else loadingSimple">
+          <span class="inline-flex items-center px-3 py-1 rounded-full text-sm font-bold border capitalize"
+                [ngClass]="{
+                  'bg-emerald-50 text-emerald-600 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20': data.market_regime === 'bull_trend',
+                  'bg-red-50 text-red-600 border-red-200 dark:bg-red-500/10 dark:text-red-400 dark:border-red-500/20': data.market_regime === 'bear_trend',
+                  'bg-amber-50 text-amber-600 border-amber-200 dark:bg-amber-500/10 dark:text-amber-400 dark:border-amber-500/20': data.market_regime === 'volatile' || data.market_regime === 'sideways'
+                }">
+            {{ (data.market_regime || 'neutral').replace('_', ' ') }}
+          </span>
+          <p class="text-xs text-gray-500 dark:text-slate-500 mt-2">Current Market State</p>
         </div>
       </div>
     </div>
 
-    <div class="bg-white rounded-lg shadow p-6">
-      <h3 class="text-xl font-bold text-gray-900 mb-4">Risk Alerts</h3>
-      <div class="space-y-4">
-        <div *ngIf="riskAlerts$ | async as alerts">
-          <div *ngIf="alerts.length === 0" class="text-center py-8">
-            <p class="text-gray-500">No active risk alerts</p>
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+      <!-- Detailed Metrics -->
+      <div class="card">
+        <div class="card-header">
+          <h3 class="text-lg font-bold text-gray-900 dark:text-white">Risk Metrics</h3>
+        </div>
+        <div class="p-6">
+          <div class="space-y-6" *ngIf="(riskMetrics$ | async) as data; else loadingList">
+            <div class="flex items-center justify-between p-4 bg-gray-50 dark:bg-slate-800/50 rounded-lg border border-gray-200 dark:border-white/5">
+              <div>
+                <span class="text-gray-600 dark:text-slate-400 text-sm block">Max Drawdown</span>
+                <span class="text-xs text-gray-400 dark:text-slate-500">Peak-to-trough decline</span>
+              </div>
+              <span class="text-xl font-bold text-red-400">{{ data.max_drawdown }}%</span>
+            </div>
+
+            <div class="flex items-center justify-between p-4 bg-gray-50 dark:bg-slate-800/50 rounded-lg border border-gray-200 dark:border-white/5">
+              <div>
+                 <span class="text-gray-600 dark:text-slate-400 text-sm block">Beta (vs SPY)</span>
+                 <span class="text-xs text-gray-400 dark:text-slate-500">Market correlation</span>
+              </div>
+              <span class="text-xl font-bold text-blue-400">{{ data.beta | number:'1.2-2' }}</span>
+            </div>
+
+            <div class="flex items-center justify-between p-4 bg-gray-50 dark:bg-slate-800/50 rounded-lg border border-gray-200 dark:border-white/5">
+              <div>
+                <span class="text-gray-600 dark:text-slate-400 text-sm block">Sharpe Ratio</span>
+                <span class="text-xs text-gray-400 dark:text-slate-500">Risk-adjusted return</span>
+              </div>
+              <span class="text-xl font-bold" [ngClass]="data.sharpe_ratio >= 1 ? 'text-emerald-500 dark:text-emerald-400' : 'text-amber-500 dark:text-amber-400'">
+                {{ data.sharpe_ratio | number:'1.2-2' }}
+              </span>
+            </div>
           </div>
-          <div *ngFor="let alert of alerts" class="border-l-4 border-blue-500 pl-4">
-            <p class="font-medium text-gray-900">{{ alert.type | titlecase }}</p>
-            <p class="text-sm text-gray-600">{{ alert.message }}</p>
-            <p class="text-xs text-gray-400">{{ alert.timestamp | date:'short' }}</p>
+        </div>
+      </div>
+
+      <!-- Risk Alerts -->
+      <div class="card">
+        <div class="card-header">
+          <h3 class="text-lg font-bold text-gray-900 dark:text-white">Active Risk Alerts</h3>
+        </div>
+        <div class="p-0">
+          <div *ngIf="(riskAlerts$ | async) as alerts; else loadingList">
+            <div *ngIf="alerts.length === 0" class="flex flex-col items-center justify-center py-12 text-gray-500 dark:text-slate-500">
+              <svg class="w-12 h-12 mb-4 opacity-50" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m6 2a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+              <p>No active risk alerts</p>
+            </div>
+
+            <div *ngFor="let alert of alerts" class="border-b border-gray-100 dark:border-white/5 last:border-0 p-6 flex gap-4 hover:bg-gray-50 dark:hover:bg-white/[0.02] transition-colors">
+              <div class="flex-shrink-0 mt-1">
+                <span class="w-2 h-2 rounded-full block" [ngClass]="{
+                  'bg-red-500 shadow-[0_0_8px_rgba(239,68,68,0.6)]': alert.type === 'critical',
+                  'bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.6)]': alert.type === 'warning',
+                  'bg-blue-500 shadow-[0_0_8px_rgba(59,130,246,0.6)]': alert.type === 'info'
+                }"></span>
+              </div>
+              <div>
+                <div class="flex items-center gap-2 mb-1">
+                   <h4 class="text-sm font-bold text-gray-900 dark:text-white capitalize">{{ alert.type }}</h4>
+                   <span class="text-xs text-slate-500">{{ alert.timestamp | date:'shortTime' }}</span>
+                </div>
+                <p class="text-gray-600 dark:text-slate-300 text-sm leading-relaxed">{{ alert.message }}</p>
+              </div>
+            </div>
           </div>
         </div>
       </div>
     </div>
   </div>
 </div>
+
+<ng-template #loadingSimple>
+  <div class="animate-pulse space-y-2">
+    <div class="h-8 bg-slate-700/50 rounded w-1/2"></div>
+    <div class="h-4 bg-slate-700/30 rounded w-1/4"></div>
+  </div>
+</ng-template>
+
+<ng-template #loadingList>
+  <div class="p-6 space-y-4 animate-pulse">
+    <div class="h-16 bg-slate-700/20 rounded-lg"></div>
+    <div class="h-16 bg-slate-700/20 rounded-lg"></div>
+    <div class="h-16 bg-slate-700/20 rounded-lg"></div>
+  </div>
+</ng-template>

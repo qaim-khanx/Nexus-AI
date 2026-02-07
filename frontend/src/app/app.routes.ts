@@ -83,6 +83,10 @@ export const routes: Routes = [
     loadComponent: () => import('./pages/symbol-management/symbol-management.component').then(m => m.SymbolManagementComponent)
   },
   {
+    path: 'pricing',
+    loadComponent: () => import('./pages/pricing/pricing.component').then(m => m.PricingComponent)
+  },
+  {
     path: '**',
     redirectTo: '/dashboard'
   }

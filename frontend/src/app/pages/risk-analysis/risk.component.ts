@@ -24,4 +24,9 @@ export class RiskComponent implements OnInit {
     this.marketRisk$ = this.systemStatusService.getMarketRisk();
     this.riskAlerts$ = this.systemStatusService.getRiskAlerts();
   }
+
+  formatCurrency(value: number): string {
+    if (value === undefined || value === null) return '$0.00';
+    return new Intl.NumberFormat('en-US', { style: 'currency', currency: 'USD' }).format(value);
+  }
 }

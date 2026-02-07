@@ -1,174 +1,185 @@
-<div class="min-h-screen bg-gray-50">
+<div class="min-h-screen">
   <div class="max-w-7xl mx-auto py-6 sm:px-6 lg:px-8">
     <div class="px-4 py-6 sm:px-0">
-      <h1 class="text-3xl font-bold text-gray-900 mb-8">Symbol Management</h1>
-      
+      <h1 class="text-3xl font-bold text-gray-900 dark:text-white mb-2 tracking-tight">Symbol Management</h1>
+      <p class="text-gray-600 dark:text-slate-400 mb-8">Manage portfolio allocation and tracking universe</p>
+
       <!-- System Summary -->
-      <div class="bg-white shadow rounded-lg p-6 mb-8">
-        <h2 class="text-xl font-semibold text-gray-900 mb-4">Portfolio Summary</h2>
-        <div *ngIf="loading" class="flex items-center justify-center py-8">
-          <div class="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
-          <span class="ml-3 text-gray-600">Loading symbol data...</span>
+      <div class="card mb-8">
+        <div class="card-header">
+          <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Portfolio Summary</h2>
         </div>
-        
-        <div *ngIf="error" class="bg-red-50 border border-red-200 rounded-lg p-4">
-          <div class="flex">
-            <div class="flex-shrink-0">
-              <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
-                <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
-              </svg>
+        <div class="p-6">
+          <div *ngIf="loading" class="flex items-center justify-center py-8">
+            <div class="loading-spinner"></div>
+            <span class="ml-3 text-gray-600 dark:text-slate-400">Loading symbol data...</span>
+          </div>
+
+          <div *ngIf="error" class="bg-red-500/10 border border-red-500/20 rounded-xl p-4 mb-4">
+            <div class="flex">
+              <div class="flex-shrink-0">
+                <svg class="h-5 w-5 text-red-400" viewBox="0 0 20 20" fill="currentColor">
+                  <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd" />
+                </svg>
+              </div>
+              <div class="ml-3">
+                <h3 class="text-sm font-medium text-red-400">Error loading data</h3>
+                <div class="mt-1 text-sm text-red-400/70">{{ error }}</div>
+              </div>
             </div>
-            <div class="ml-3">
-              <h3 class="text-sm font-medium text-red-800">Error loading data</h3>
-              <div class="mt-2 text-sm text-red-700">{{ error }}</div>
+          </div>
+
+          <div *ngIf="!loading && !error && summary" class="grid grid-cols-1 md:grid-cols-4 gap-6">
+            <div class="bg-blue-900/20 p-5 rounded-xl border border-blue-500/20">
+              <h3 class="text-xs font-bold text-blue-600 dark:text-blue-400 uppercase tracking-wider mb-1">Total Symbols</h3>
+              <p class="text-3xl font-bold text-gray-900 dark:text-white">{{ summary.total_symbols }}</p>
             </div>
-          </div>
-        </div>
-        
-        <div *ngIf="!loading && !error && summary" class="grid grid-cols-1 md:grid-cols-4 gap-6">
-          <div class="bg-blue-50 p-4 rounded-lg">
-            <h3 class="text-sm font-medium text-blue-800">Total Symbols</h3>
-            <p class="text-2xl font-bold text-blue-900">{{ summary.total_symbols }}</p>
-          </div>
-          <div class="bg-green-50 p-4 rounded-lg">
-            <h3 class="text-sm font-medium text-green-800">Active</h3>
-            <p class="text-2xl font-bold text-green-900">{{ summary.active_symbols }}</p>
-          </div>
-          <div class="bg-yellow-50 p-4 rounded-lg">
-            <h3 class="text-sm font-medium text-yellow-800">Monitoring</h3>
-            <p class="text-2xl font-bold text-yellow-900">{{ summary.monitoring_symbols }}</p>
-          </div>
-          <div class="bg-purple-50 p-4 rounded-lg">
-            <h3 class="text-sm font-medium text-purple-800">Watchlist</h3>
-            <p class="text-2xl font-bold text-purple-900">{{ summary.watchlist_symbols }}</p>
+            <div class="bg-emerald-900/20 p-5 rounded-xl border border-emerald-500/20">
+              <h3 class="text-xs font-bold text-emerald-600 dark:text-emerald-400 uppercase tracking-wider mb-1">Active</h3>
+              <p class="text-3xl font-bold text-gray-900 dark:text-white">{{ summary.active_symbols }}</p>
+            </div>
+            <div class="bg-amber-900/20 p-5 rounded-xl border border-amber-500/20">
+              <h3 class="text-xs font-bold text-amber-600 dark:text-amber-400 uppercase tracking-wider mb-1">Monitoring</h3>
+              <p class="text-3xl font-bold text-gray-900 dark:text-white">{{ summary.monitoring_symbols }}</p>
+            </div>
+            <div class="bg-purple-900/20 p-5 rounded-xl border border-purple-500/20">
+              <h3 class="text-xs font-bold text-purple-600 dark:text-purple-400 uppercase tracking-wider mb-1">Watchlist</h3>
+              <p class="text-3xl font-bold text-gray-900 dark:text-white">{{ summary.watchlist_symbols }}</p>
+            </div>
           </div>
         </div>
       </div>
-      
+
       <!-- Add New Symbol -->
-      <div class="bg-white shadow rounded-lg p-6 mb-8">
-        <h2 class="text-xl font-semibold text-gray-900 mb-4">Add New Symbol</h2>
-        <form (ngSubmit)="addSymbol()" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Symbol</label>
-            <input 
-              type="text" 
-              [(ngModel)]="newSymbol.symbol" 
-              name="symbol"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="e.g., BTC-USD"
-              required>
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Company Name</label>
-            <input 
-              type="text" 
-              [(ngModel)]="newSymbol.name" 
-              name="name"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="e.g., Apple Inc."
-              required>
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Sector</label>
-            <input 
-              type="text" 
-              [(ngModel)]="newSymbol.sector" 
-              name="sector"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="e.g., Technology"
-              required>
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Industry</label>
-            <input 
-              type="text" 
-              [(ngModel)]="newSymbol.industry" 
-              name="industry"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="e.g., Consumer Electronics"
-              required>
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Status</label>
-            <select 
-              [(ngModel)]="newSymbol.status" 
-              name="status"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-              <option value="active">Active</option>
-              <option value="monitoring">Monitoring</option>
-              <option value="watchlist">Watchlist</option>
-            </select>
-          </div>
-          <div>
-            <label class="block text-sm font-medium text-gray-700 mb-1">Priority</label>
-            <select 
-              [(ngModel)]="newSymbol.priority" 
-              name="priority"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-              <option value="1">Low (1)</option>
-              <option value="2">Medium-Low (2)</option>
-              <option value="3">Medium (3)</option>
-              <option value="4">Medium-High (4)</option>
-              <option value="5">High (5)</option>
-            </select>
-          </div>
-          <div class="md:col-span-2 lg:col-span-3">
-            <label class="block text-sm font-medium text-gray-700 mb-1">Notes</label>
-            <textarea 
-              [(ngModel)]="newSymbol.notes" 
-              name="notes"
-              rows="2"
-              class="w-full px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-              placeholder="Optional notes about this symbol..."></textarea>
-          </div>
-          <div class="md:col-span-2 lg:col-span-3">
-            <button 
-              type="submit"
-              [disabled]="adding"
-              class="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white px-6 py-2 rounded-lg font-medium transition-colors">
-              {{ adding ? 'Adding...' : 'Add Symbol' }}
+      <div class="card mb-8">
+        <div class="card-header">
+           <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Add New Symbol</h2>
+        </div>
+        <div class="p-6">
+          <form (ngSubmit)="addSymbol()" class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div>
+              <label class="block text-sm font-medium text-gray-700 dark:text-slate-400 mb-2">Symbol</label>
+              <input
+                type="text"
+                [(ngModel)]="newSymbol.symbol"
+                name="symbol"
+                class="w-full px-4 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-500 transition-all font-mono uppercase"
+                placeholder="e.g., BTC-USD"
+                required>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 dark:text-slate-400 mb-2">Company Name</label>
+              <input
+                type="text"
+                [(ngModel)]="newSymbol.name"
+                name="name"
+                class="w-full px-4 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-500 transition-all"
+                placeholder="e.g., Apple Inc."
+                required>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 dark:text-slate-400 mb-2">Sector</label>
+              <input
+                type="text"
+                [(ngModel)]="newSymbol.sector"
+                name="sector"
+                class="w-full px-4 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-500 transition-all"
+                placeholder="e.g., Technology"
+                required>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 dark:text-slate-400 mb-2">Industry</label>
+              <input
+                type="text"
+                [(ngModel)]="newSymbol.industry"
+                name="industry"
+                class="w-full px-4 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-500 transition-all"
+                placeholder="e.g., Consumer Electronics"
+                required>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 dark:text-slate-400 mb-2">Status</label>
+              <select
+                [(ngModel)]="newSymbol.status"
+                name="status"
+                class="w-full px-4 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 dark:text-white transition-all">
+                <option value="active">Active</option>
+                <option value="monitoring">Monitoring</option>
+                <option value="watchlist">Watchlist</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-sm font-medium text-gray-700 dark:text-slate-400 mb-2">Priority</label>
+              <select
+                [(ngModel)]="newSymbol.priority"
+                name="priority"
+                class="w-full px-4 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 dark:text-white transition-all">
+                <option value="1">Low (1)</option>
+                <option value="2">Medium-Low (2)</option>
+                <option value="3">Medium (3)</option>
+                <option value="4">Medium-High (4)</option>
+                <option value="5">High (5)</option>
+              </select>
+            </div>
+            <div class="md:col-span-2 lg:col-span-3">
+              <label class="block text-sm font-medium text-gray-700 dark:text-slate-400 mb-2">Notes</label>
+              <textarea
+                [(ngModel)]="newSymbol.notes"
+                name="notes"
+                rows="2"
+                class="w-full px-4 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-500 transition-all resize-none"
+                placeholder="Optional notes about this symbol..."></textarea>
+            </div>
+            <div class="md:col-span-2 lg:col-span-3">
+              <button
+                type="submit"
+                [disabled]="adding"
+                class="btn btn-primary w-full sm:w-auto">
+                {{ adding ? 'Processing...' : 'Add Symbol' }}
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
+
+      <!-- Symbol Search -->
+      <div class="card mb-8">
+        <div class="card-header">
+          <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Search Symbols</h2>
+        </div>
+        <div class="p-6">
+          <div class="flex flex-col sm:flex-row gap-4">
+            <input
+              type="text"
+              [(ngModel)]="searchQuery"
+              (input)="searchSymbols()"
+              class="flex-1 px-4 py-2 bg-white dark:bg-slate-800 border border-gray-300 dark:border-slate-700 rounded-lg focus:outline-none focus:ring-2 focus:ring-indigo-500 text-gray-900 dark:text-white placeholder-gray-400 dark:placeholder-slate-500 transition-all"
+              placeholder="Search by symbol, name, sector, or industry...">
+            <button
+              (click)="searchSymbols()"
+              class="btn btn-secondary">
+              Search
             </button>
           </div>
-        </form>
-      </div>
-      
-      <!-- Symbol Search -->
-      <div class="bg-white shadow rounded-lg p-6 mb-8">
-        <h2 class="text-xl font-semibold text-gray-900 mb-4">Search Symbols</h2>
-        <div class="flex gap-4">
-          <input 
-            type="text" 
-            [(ngModel)]="searchQuery"
-            (input)="searchSymbols()"
-            class="flex-1 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500"
-            placeholder="Search by symbol, name, sector, or industry...">
-          <button 
-            (click)="searchSymbols()"
-            class="bg-gray-600 hover:bg-gray-700 text-white px-4 py-2 rounded-lg font-medium">
-            Search
-          </button>
-        </div>
-        
-        <!-- Search Results -->
-        <div *ngIf="searchResults.length > 0" class="mt-4">
-          <h3 class="text-lg font-medium text-gray-900 mb-2">Search Results</h3>
-          <div class="space-y-2">
-            <div *ngFor="let result of searchResults" class="flex items-center justify-between p-3 border border-gray-200 rounded-lg">
+
+          <!-- Search Results -->
+          <div *ngIf="searchResults.length > 0" class="mt-6 space-y-2 animate-fade-in-up">
+            <h3 class="text-sm font-medium text-gray-500 dark:text-slate-400 mb-3 uppercase tracking-wider">Search Results</h3>
+            <div *ngFor="let result of searchResults" class="flex items-center justify-between p-4 bg-gray-50 dark:bg-slate-800/50 border border-gray-200 dark:border-slate-700/50 rounded-lg hover:border-gray-300 dark:hover:border-slate-600 transition-colors">
               <div>
-                <span class="font-medium text-gray-900">{{ result.symbol }}</span>
-                <span class="text-gray-600 ml-2">{{ result.name }}</span>
-                <span class="text-sm text-gray-500 ml-2">{{ result.sector }} - {{ result.industry }}</span>
+                <span class="font-bold text-gray-900 dark:text-white tracking-wide">{{ result.symbol }}</span>
+                <span class="text-gray-600 dark:text-slate-400 ml-2 font-medium">{{ result.name }}</span>
+                <span class="text-xs text-gray-500 dark:text-slate-500 ml-2 block sm:inline mt-1 sm:mt-0">{{ result.sector }} • {{ result.industry }}</span>
               </div>
-              <div class="flex items-center gap-2">
-                <span class="text-sm px-2 py-1 rounded-full" 
-                      [class]="result.is_managed ? 'bg-green-100 text-green-800' : 'bg-gray-100 text-gray-800'">
+              <div class="flex items-center gap-3">
+                <span class="text-xs px-2.5 py-1 rounded-full font-bold uppercase tracking-wide border"
+                      [class]="result.is_managed ? 'bg-emerald-50 text-emerald-600 border-emerald-200 dark:bg-emerald-500/10 dark:text-emerald-400 dark:border-emerald-500/20' : 'bg-gray-200 text-gray-600 border-gray-300 dark:bg-slate-700/50 dark:text-slate-400 dark:border-slate-600'">
                   {{ result.is_managed ? 'Managed' : 'Not Managed' }}
                 </span>
-                <button 
+                <button
                   *ngIf="!result.is_managed"
                   (click)="addFromSearch(result)"
-                  class="bg-blue-600 hover:bg-blue-700 text-white px-3 py-1 rounded text-sm">
+                  class="btn btn-primary py-1 text-xs">
                   Add to Portfolio
                 </button>
               </div>
@@ -176,91 +187,89 @@
           </div>
         </div>
       </div>
-      
+
       <!-- Managed Symbols -->
-      <div class="bg-white shadow rounded-lg p-6 mb-8">
-        <div class="flex items-center justify-between mb-4">
-          <h2 class="text-xl font-semibold text-gray-900">Managed Symbols</h2>
-          <div class="flex gap-2">
-            <select 
-              [(ngModel)]="statusFilter"
-              (change)="loadSymbols()"
-              class="px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500">
-              <option value="">All Status</option>
-              <option value="active">Active</option>
-              <option value="monitoring">Monitoring</option>
-              <option value="watchlist">Watchlist</option>
-              <option value="inactive">Inactive</option>
-            </select>
-            <button 
-              (click)="loadSymbols()"
-              [disabled]="refreshing"
-              class="bg-gray-600 hover:bg-gray-700 disabled:bg-gray-400 text-white px-4 py-2 rounded-lg font-medium">
-              {{ refreshing ? 'Refreshing...' : 'Refresh' }}
-            </button>
+      <div class="card mb-8">
+        <div class="card-header">
+           <div class="flex items-center justify-between w-full">
+            <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Managed Symbols</h2>
+            <div class="flex items-center gap-3">
+              <select
+                [(ngModel)]="statusFilter"
+                (change)="loadSymbols()"
+                class="px-3 py-1.5 bg-white dark:bg-slate-800 text-gray-900 dark:text-slate-200 border border-gray-300 dark:border-slate-700 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500">
+                <option value="">All Status</option>
+                <option value="active">Active</option>
+                <option value="monitoring">Monitoring</option>
+                <option value="watchlist">Watchlist</option>
+                <option value="inactive">Inactive</option>
+              </select>
+              <button
+                (click)="loadSymbols()"
+                [disabled]="refreshing"
+                class="btn btn-secondary py-1.5 text-xs">
+                {{ refreshing ? '...' : 'Refresh' }}
+              </button>
+            </div>
           </div>
         </div>
-        
-        <div *ngIf="symbols.length === 0" class="text-center py-8 text-gray-500">
+
+        <div *ngIf="symbols.length === 0" class="text-center py-12 text-gray-500 dark:text-slate-500">
           No symbols found. Add your first symbol above.
         </div>
-        
+
         <div *ngIf="symbols.length > 0" class="overflow-x-auto">
-          <table class="min-w-full divide-y divide-gray-200">
-            <thead class="bg-gray-50">
+          <table class="table">
+            <thead class="table-header">
               <tr>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Symbol</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Name</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Sector</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Status</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Priority</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Source</th>
-                <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Actions</th>
+                <th class="table-header-cell">Symbol</th>
+                <th class="table-header-cell">Name</th>
+                <th class="table-header-cell">Sector</th>
+                <th class="table-header-cell">Status</th>
+                <th class="table-header-cell">Priority</th>
+                <th class="table-header-cell">Source</th>
+                <th class="table-header-cell">Actions</th>
               </tr>
             </thead>
-            <tbody class="bg-white divide-y divide-gray-200">
-              <tr *ngFor="let symbol of symbols">
-                <td class="px-6 py-4 whitespace-nowrap">
-                  <div class="text-sm font-medium text-gray-900">{{ symbol.symbol }}</div>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                  <div class="text-sm text-gray-900">{{ symbol.name || 'N/A' }}</div>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                  <div class="text-sm text-gray-900">{{ symbol.sector || 'N/A' }}</div>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                  <span class="px-2 py-1 text-xs font-medium rounded-full"
-                        [class]="getStatusClass(symbol.status)">
+            <tbody class="table-body">
+              <tr *ngFor="let symbol of symbols" class="table-row">
+                <td class="table-cell font-bold text-gray-900 dark:text-white tracking-wide">{{ symbol.symbol }}</td>
+                <td class="table-cell text-gray-600 dark:text-slate-400">{{ symbol.name || 'N/A' }}</td>
+                <td class="table-cell text-gray-600 dark:text-slate-400">{{ symbol.sector || 'N/A' }}</td>
+                <td class="table-cell">
+                  <span class="status-indicator"
+                        [ngClass]="{
+                          'status-active': symbol.status === 'active',
+                          'status-warning': symbol.status === 'monitoring',
+                          'status-idle': symbol.status === 'watchlist'
+                        }">
                     {{ symbol.status | titlecase }}
                   </span>
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap">
+                <td class="table-cell">
                   <div class="flex items-center">
-                    <div class="w-16 bg-gray-200 rounded-full h-2 mr-2">
-                      <div class="bg-blue-600 h-2 rounded-full" [style.width.%]="(symbol.priority / 5) * 100"></div>
+                    <div class="w-16 bg-gray-200 dark:bg-slate-800 rounded-full h-1.5 mr-3 overflow-hidden">
+                      <div class="bg-indigo-500 h-1.5 rounded-full" [style.width.%]="(symbol.priority / 5) * 100"></div>
                     </div>
-                    <span class="text-sm text-gray-900">{{ symbol.priority }}</span>
+                    <span class="text-xs text-gray-500 dark:text-slate-400">{{ symbol.priority }}</span>
                   </div>
                 </td>
-                <td class="px-6 py-4 whitespace-nowrap">
-                  <span class="text-sm text-gray-900">{{ symbol.source | titlecase }}</span>
-                </td>
-                <td class="px-6 py-4 whitespace-nowrap text-sm font-medium">
-                  <div class="flex space-x-2">
-                    <button 
+                <td class="table-cell text-gray-500 dark:text-slate-500 text-xs uppercase tracking-wide">{{ symbol.source }}</td>
+                <td class="table-cell">
+                  <div class="flex space-x-3">
+                    <button
                       (click)="viewSymbolDetails(symbol)"
-                      class="text-blue-600 hover:text-blue-900">
+                      class="text-indigo-600 dark:text-indigo-400 hover:text-indigo-500 dark:hover:text-indigo-300 text-xs font-bold uppercase tracking-wider transition-colors">
                       View
                     </button>
-                    <button 
+                    <button
                       (click)="editSymbol(symbol)"
-                      class="text-green-600 hover:text-green-900">
+                      class="text-gray-400 dark:text-slate-400 hover:text-gray-600 dark:hover:text-white text-xs font-bold uppercase tracking-wider transition-colors">
                       Edit
                     </button>
-                    <button 
+                    <button
                       (click)="removeSymbol(symbol.symbol)"
-                      class="text-red-600 hover:text-red-900">
+                      class="text-red-500 dark:text-red-400 hover:text-red-600 dark:hover:text-red-300 text-xs font-bold uppercase tracking-wider transition-colors">
                       Remove
                     </button>
                   </div>
@@ -270,41 +279,46 @@
           </table>
         </div>
       </div>
-      
+
       <!-- Trading Decisions -->
-      <div class="bg-white shadow rounded-lg p-6">
-        <div class="flex items-center justify-between mb-4">
-          <h2 class="text-xl font-semibold text-gray-900">Trading Decisions</h2>
-          <button 
-            (click)="loadTradingDecisions()"
-            [disabled]="loadingDecisions"
-            class="bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 text-white px-4 py-2 rounded-lg font-medium">
-            {{ loadingDecisions ? 'Loading...' : 'Refresh Decisions' }}
-          </button>
+      <div class="card">
+        <div class="card-header">
+           <div class="flex items-center justify-between w-full">
+             <h2 class="text-xl font-semibold text-gray-900 dark:text-white">Trading Decisions</h2>
+            <button
+              (click)="loadTradingDecisions()"
+              [disabled]="loadingDecisions"
+              class="btn btn-primary py-1.5 text-xs">
+              {{ loadingDecisions ? 'Loading...' : 'Refresh Decisions' }}
+            </button>
+           </div>
         </div>
-        
-        <div *ngIf="tradingDecisions.length === 0" class="text-center py-8 text-gray-500">
+
+        <div *ngIf="tradingDecisions.length === 0" class="text-center py-12 text-gray-500 dark:text-slate-500">
           No trading decisions available. Add symbols to your portfolio to get AI-powered trading recommendations.
         </div>
-        
-        <div *ngIf="tradingDecisions.length > 0" class="space-y-4">
-          <div *ngFor="let decision of tradingDecisions" class="border border-gray-200 rounded-lg p-4">
-            <div class="flex items-center justify-between mb-2">
+
+        <div *ngIf="tradingDecisions.length > 0" class="p-6 space-y-4">
+          <div *ngFor="let decision of tradingDecisions" class="bg-gray-50 dark:bg-slate-800/30 border border-gray-200 dark:border-white/5 rounded-xl p-5 hover:border-indigo-500/30 transition-colors">
+            <div class="flex items-center justify-between mb-3">
               <div class="flex items-center gap-3">
-                <span class="font-medium text-gray-900">{{ decision.symbol }}</span>
-                <span class="px-2 py-1 text-xs font-medium rounded-full"
-                      [class]="getActionClass(decision.action)">
-                  {{ decision.action | titlecase }}
+                <span class="font-bold text-lg text-gray-900 dark:text-white tracking-wide">{{ decision.symbol }}</span>
+                <span class="status-indicator"
+                      [ngClass]="{
+                        'status-active': decision.action === 'buy',
+                        'status-error': decision.action === 'sell',
+                        'status-warning': decision.action === 'hold'
+                      }">
+                  {{ decision.action | uppercase }}
                 </span>
-                <span class="text-sm text-gray-500">Confidence: {{ (decision.confidence * 100) | number:'1.0-0' }}%</span>
+                <span class="text-xs text-gray-500 dark:text-slate-500 font-mono">CONF: {{ (decision.confidence * 100) | number:'1.0-0' }}%</span>
               </div>
-              <span class="text-sm text-gray-500">{{ decision.generated_at | date:'short' }}</span>
+              <span class="text-xs text-gray-500 dark:text-slate-500">{{ decision.generated_at | date:'short' }}</span>
             </div>
-            <p class="text-sm text-gray-700">{{ decision.reasoning }}</p>
-            <div *ngIf="decision.target_price || decision.stop_loss" class="mt-2 text-sm text-gray-600">
-              <span *ngIf="decision.target_price">Target: ${{ decision.target_price | number:'1.2-2' }}</span>
-              <span *ngIf="decision.target_price && decision.stop_loss"> | </span>
-              <span *ngIf="decision.stop_loss">Stop Loss: ${{ decision.stop_loss | number:'1.2-2' }}</span>
+            <p class="text-gray-600 dark:text-slate-300 text-sm leading-relaxed">{{ decision.reasoning }}</p>
+            <div *ngIf="decision.target_price || decision.stop_loss" class="mt-3 pt-3 border-t border-gray-200 dark:border-white/5 flex gap-6 text-xs font-medium">
+              <span *ngIf="decision.target_price" class="text-emerald-400">TARGET: ${{ decision.target_price | number:'1.2-2' }}</span>
+              <span *ngIf="decision.stop_loss" class="text-red-400">STOP: ${{ decision.stop_loss | number:'1.2-2' }}</span>
             </div>
           </div>
         </div>
