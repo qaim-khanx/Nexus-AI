@@ -479,8 +479,8 @@ export interface RAGPerformance {
 })
 export class SystemStatusService {
   private apiUrl = environment.apiUrl;
-  // TODO: Set to false before production deployment
-  private demoMode = false;
+  // Demo mode enabled for public showcase - visitors can explore all features
+  private demoMode = true;
   private systemStatusSubject = new BehaviorSubject<SystemStatus | null>(null);
   private agentsStatusSubject = new BehaviorSubject<AgentStatus[]>([]);
   private predictionsSubject = new BehaviorSubject<Prediction[]>([]);
