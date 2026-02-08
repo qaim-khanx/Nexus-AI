@@ -73,6 +73,37 @@ export class EnsembleBlenderComponent implements OnInit, OnDestroy {
     this.loadingSummary = true;
     this.errorSummary = false;
 
+    // Demo mode - use mock data
+    const useMockData = true;
+
+    if (useMockData) {
+      setTimeout(() => {
+        this.summary = {
+          agent_name: 'Ensemble Signal Blender',
+          blend_mode: 'weighted_average',
+          current_regime: 'bull',
+          total_signals_generated: 1245,
+          avg_quality_score: 0.82,
+          recent_quality_scores: [0.85, 0.79, 0.83, 0.81, 0.84],
+          agent_weights: {},
+          regime_history: [],
+          performance_metrics: {
+            total_signals_blended: 1245,
+            avg_contributing_agents: 6.8,
+            signal_quality_trend: 'improving',
+            regime_adaptation_score: 0.89,
+            consistency_score: 0.78,
+            agreement_score: 0.82,
+            false_positive_reduction: 0.35,
+            risk_adjusted_improvement: 0.42
+          },
+          last_updated: new Date().toISOString()
+        };
+        this.loadingSummary = false;
+      }, 300);
+      return;
+    }
+
     this.http.get<EnsembleBlenderSummary>('http://localhost:8001/ensemble-blender')
       .pipe(
         catchError(error => {
@@ -90,6 +121,20 @@ export class EnsembleBlenderComponent implements OnInit, OnDestroy {
   private loadSignals(): void {
     this.loadingSignals = true;
     this.errorSignals = false;
+
+    const useMockData = true;
+    if (useMockData) {
+      setTimeout(() => {
+        this.signals = [
+          { symbol: 'AAPL', signal_type: 'strong_buy', confidence: 0.89, blended_confidence: 0.92, contributing_agents: ['LSTM Day Trader', 'RL Strategy', 'RAG Event'], blend_mode: 'weighted_average', regime: 'bull', quality_score: 0.88, consistency_score: 0.85, agreement_score: 0.91, timestamp: new Date().toISOString() },
+          { symbol: 'NVDA', signal_type: 'buy', confidence: 0.82, blended_confidence: 0.85, contributing_agents: ['Transformer', 'LSTM', 'Pattern Detector'], blend_mode: 'weighted_average', regime: 'bull', quality_score: 0.83, consistency_score: 0.79, agreement_score: 0.86, timestamp: new Date().toISOString() },
+          { symbol: 'TSLA', signal_type: 'hold', confidence: 0.65, blended_confidence: 0.68, contributing_agents: ['RL Strategy', 'Anomaly Detector'], blend_mode: 'majority', regime: 'volatile', quality_score: 0.62, consistency_score: 0.58, agreement_score: 0.69, timestamp: new Date().toISOString() },
+          { symbol: 'MSFT', signal_type: 'buy', confidence: 0.79, blended_confidence: 0.81, contributing_agents: ['LSTM', 'RAG Event', 'Sentiment'], blend_mode: 'weighted_average', regime: 'bull', quality_score: 0.80, consistency_score: 0.77, agreement_score: 0.83, timestamp: new Date().toISOString() }
+        ];
+        this.loadingSignals = false;
+      }, 350);
+      return;
+    }
 
     this.http.get<EnsembleSignalData[]>('http://localhost:8001/ensemble-blender/signals')
       .pipe(
@@ -109,6 +154,22 @@ export class EnsembleBlenderComponent implements OnInit, OnDestroy {
     this.loadingQuality = true;
     this.errorQuality = false;
 
+    const useMockData = true;
+    if (useMockData) {
+      setTimeout(() => {
+        this.qualityMetrics = {
+          consistency_score: 0.78,
+          agreement_score: 0.82,
+          confidence_variance: 0.15,
+          regime_alignment: 0.89,
+          historical_accuracy: 0.76,
+          overall_quality: 0.81
+        };
+        this.loadingQuality = false;
+      }, 400);
+      return;
+    }
+
     this.http.get<SignalQualityData>('http://localhost:8001/ensemble-blender/quality')
       .pipe(
         catchError(error => {
@@ -126,6 +187,65 @@ export class EnsembleBlenderComponent implements OnInit, OnDestroy {
   private loadPerformanceData(): void {
     this.loadingPerformance = true;
     this.errorPerformance = false;
+
+    const useMockData = true;
+    if (useMockData) {
+      setTimeout(() => {
+        this.performanceData = {
+          signal_quality: {
+            avg_quality_score: 0.82,
+            quality_trend: 'improving',
+            high_quality_signals: 112,
+            low_quality_signals: 18,
+            quality_consistency: 0.85
+          },
+          blending_effectiveness: {
+            avg_contributing_agents: 6.8,
+            consensus_rate: 0.78,
+            disagreement_rate: 0.22,
+            blend_mode_effectiveness: {
+              weighted_average: 0.89,
+              majority: 0.76,
+              max_confidence: 0.82,
+              average: 0.71
+            }
+          },
+          regime_adaptation: {
+            current_regime: 'bull',
+            regime_accuracy: 0.87,
+            regime_transitions: 12,
+            adaptation_speed: 0.92,
+            regime_performance: {
+              bull: 0.89,
+              bear: 0.78,
+              sideways: 0.72,
+              volatile: 0.68,
+              trending: 0.85
+            }
+          },
+          risk_management: {
+            false_positive_reduction: 0.35,
+            false_negative_reduction: 0.28,
+            risk_adjusted_improvement: 0.42,
+            volatility_reduction: 0.31,
+            drawdown_improvement: 0.38
+          },
+          agent_contribution: {
+            top_contributors: [
+              { agent: 'LSTM Day Trader', contribution: 0.24 },
+              { agent: 'RL Strategy Agent', contribution: 0.21 },
+              { agent: 'RAG Event Agent', contribution: 0.18 },
+              { agent: 'Transformer Agent', contribution: 0.16 }
+            ],
+            weight_stability: 0.88,
+            performance_correlation: 0.82
+          },
+          last_updated: new Date().toISOString()
+        };
+        this.loadingPerformance = false;
+      }, 450);
+      return;
+    }
 
     this.http.get<EnsemblePerformanceData>('http://localhost:8001/ensemble-blender/performance')
       .pipe(
