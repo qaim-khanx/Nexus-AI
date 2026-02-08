@@ -1639,6 +1639,58 @@ export class SystemStatusService {
   }
 
   getLatestRAGAnalysis(): Observable<{success: boolean, sector_analyses: any, last_updated: string}> {
+    if (this.demoMode) {
+      return of({
+        success: true,
+        sector_analyses: {
+          'Technology': {
+            sentiment: 'bullish',
+            confidence: 0.87,
+            key_insights: [
+              'AI chip demand surge continues with NVDA reporting 120% YoY growth',
+              'Cloud infrastructure spending up 35% as enterprises accelerate digital transformation',
+              'Semiconductor shortage easing - lead times down to 12 weeks from 20'
+            ],
+            top_symbols: ['NVDA', 'MSFT', 'GOOGL'],
+            risk_level: 'medium'
+          },
+          'Financial': {
+            sentiment: 'neutral',
+            confidence: 0.72,
+            key_insights: [
+              'Banking sector stable with rising interest rates supporting margins',
+              'Fintech growth slowing as regulation tightens',
+              'Credit quality remains strong with default rates below historical average'
+            ],
+            top_symbols: ['JPM', 'GS', 'V'],
+            risk_level: 'low'
+          },
+          'Energy': {
+            sentiment: 'bullish',
+            confidence: 0.81,
+            key_insights: [
+              'Oil prices stabilizing around $80/barrel on OPEC+ production cuts',
+              'Renewable energy investments reaching record highs',
+              'Natural gas demand surges in Europe ahead of winter'
+            ],
+            top_symbols: ['XOM', 'CVX', 'NEE'],
+            risk_level: 'medium'
+          },
+          'Healthcare': {
+            sentiment: 'bullish',
+            confidence: 0.79,
+            key_insights: [
+              'GLP-1 weight loss drugs driving pharma growth - market expected to hit $100B',
+              'Biotech M&A activity accelerating with 15 deals announced this quarter',
+              'Medicare negotiations creating pricing uncertainty for legacy drugs'
+            ],
+            top_symbols: ['LLY', 'NVO', 'UNH'],
+            risk_level: 'low'
+          }
+        },
+        last_updated: new Date().toISOString()
+      });
+    }
     return this.http.get<{success: boolean, sector_analyses: any, last_updated: string}>(`${this.apiUrl}/rag-event-agent/latest-analysis`).pipe(
       catchError(error => {
         console.error('Error getting latest RAG analysis:', error);
